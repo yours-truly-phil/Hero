@@ -1,7 +1,15 @@
 package io.horrorshow;
 
-import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Game;
+import io.horrorshow.screens.MainMenu;
 
-/** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
-public class Hero extends ApplicationAdapter {
+public class Hero extends Game {
+    public static final int V_WIDTH = 256;
+    public static final int V_HEIGHT = 192;
+    public static final float PPM = 8;
+
+    @Override
+    public void create() {
+        setScreen(new MainMenu(this));
+    }
 }

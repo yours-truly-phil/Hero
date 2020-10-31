@@ -8,4 +8,10 @@ dependencies {
 	api "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
 	api "com.badlogicgames.ashley:ashley:$ashleyVersion"
 	api "com.badlogicgames.gdx:gdx-ai:$aiVersion"
+
+    compileOnly 'org.projectlombok:lombok:1.18.16'
+    annotationProcessor 'org.projectlombok:lombok:1.18.16'
+
+    testCompileOnly 'org.projectlombok:lombok:1.18.16'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.16'
 }
