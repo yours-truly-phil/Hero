@@ -4,11 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2D;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -29,8 +26,7 @@ public class PlayScreen extends HeroScreen {
     private final B2DWorld b2dWorld;
 
     private final Potty potty;
-    private final Sprite miniMe;
-    private final Vector2 velocity = new Vector2(0, 0);
+
     private final TextureAtlas atlas;
     public SpriteBatch batch;
 
@@ -51,11 +47,6 @@ public class PlayScreen extends HeroScreen {
 
         gameCam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
 
-        miniMe = new Sprite(new Texture("sprites/8x8.png"));
-        miniMe.setScale(1 / PPM);
-        System.out.println("miniMe origin: " + miniMe.getOriginX() + " " + miniMe.getOriginY());
-        miniMe.setOrigin(-miniMe.getWidth() / PPM / 2.f, 0);
-
         potty = new Potty(b2dWorld.world, atlas);
     }
 
@@ -67,12 +58,10 @@ public class PlayScreen extends HeroScreen {
     public void update(float dt) {
         b2dWorld.update(dt);
         handleInput(dt);
-        miniMe.translate(velocity.x, velocity.y);
         potty.update(dt);
         var pottyPos = potty.b2body.getPosition();
         gameCam.position.x = pottyPos.x;
         gameCam.position.y = pottyPos.y;
-        miniMe.setPosition(pottyPos.x, pottyPos.y);
         gameCam.update();
     }
 
@@ -96,7 +85,6 @@ public class PlayScreen extends HeroScreen {
 
         batch.begin();
         batch.setProjectionMatrix(gameCam.combined);
-        miniMe.draw(batch);
         potty.draw(batch);
         batch.end();
 
