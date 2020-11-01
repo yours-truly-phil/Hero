@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Ellipse;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import io.horrorshow.sprites.tiles.Door;
 
 import static io.horrorshow.Hero.PPM;
 
@@ -51,6 +52,10 @@ public class B2DWorldCreator {
             Body body = world.createBody(bdef);
 
             body.createFixture(fdef);
+        }
+
+        for (MapObject object : map.getLayers().get("door").getObjects().getByType(RectangleMapObject.class)) {
+            new Door(world, map, (RectangleMapObject) object);
         }
         return world;
     }

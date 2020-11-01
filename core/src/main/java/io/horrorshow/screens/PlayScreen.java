@@ -31,10 +31,8 @@ public class PlayScreen extends HeroScreen {
     private final Potty potty;
     private final Sprite miniMe;
     private final Vector2 velocity = new Vector2(0, 0);
-
-    public SpriteBatch batch;
-
     private final TextureAtlas atlas;
+    public SpriteBatch batch;
 
     public PlayScreen(Hero game) {
         super(game);
@@ -94,13 +92,17 @@ public class PlayScreen extends HeroScreen {
 
         update(dt);
 
-        b2dWorld.render(gameCam, true);
+        b2dWorld.renderBackground(gameCam);
 
         batch.begin();
         batch.setProjectionMatrix(gameCam.combined);
         miniMe.draw(batch);
         potty.draw(batch);
         batch.end();
+
+        b2dWorld.renderForeground(gameCam);
+
+        b2dWorld.renderDebug(gameCam);
 
         hud.render(dt);
     }

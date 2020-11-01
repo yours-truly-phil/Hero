@@ -9,12 +9,13 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Disposable;
 import io.horrorshow.tools.B2DWorldCreator;
+import io.horrorshow.tools.WorldContactListener;
 
 import static io.horrorshow.Hero.PPM;
 
 public class B2DWorld implements Disposable {
-    B2DWorldCreator worldCreator;
     public World world;
+    B2DWorldCreator worldCreator;
     OrthogonalTiledMapRenderer renderer;
     TiledMap map;
     Box2DDebugRenderer b2dr;
@@ -25,6 +26,7 @@ public class B2DWorld implements Disposable {
         map = worldCreator.loadTmxMap(tmxLevel);
         renderer = new OrthogonalTiledMapRenderer(map, 1 / PPM);
         world = worldCreator.createWorld(map, new Vector2(0, 0)); // no gravity along x/y
+        world.setContactListener(new WorldContactListener());
         b2dr = new Box2DDebugRenderer();
     }
 
@@ -32,11 +34,18 @@ public class B2DWorld implements Disposable {
         world.step(dt, 6, 2);
     }
 
-    public void render(OrthographicCamera camera, boolean debugRenderer) {
+    public void renderBackground(OrthographicCamera camera) {
         renderer.setView(camera);
-        renderer.render();
+        renderer.render(new int[]{0, 1, 2, 3});
+    }
 
-        if (debugRenderer) b2dr.render(world, camera.combined);
+    public void renderForeground(OrthographicCamera camera) {
+        renderer.setView(camera);
+        renderer.render(new int[]{4});
+    }
+
+    public void renderDebug(OrthographicCamera camera) {
+        b2dr.render(world, camera.combined);
     }
 
     @Override

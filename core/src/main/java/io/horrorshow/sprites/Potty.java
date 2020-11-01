@@ -9,16 +9,17 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
+import io.horrorshow.Hero;
 
 import static io.horrorshow.Hero.PPM;
 
 public class Potty extends Sprite {
 
+    private final Vector2 buf_vector2 = new Vector2();
+    private final TextureRegion[] pottyStand = new TextureRegion[4];
+    private final Animation<TextureRegion>[] pottyRun = new Animation[4];
     public World world;
     public Body b2body;
-    private TextureRegion[] pottyStand = new TextureRegion[4];
-    private Animation<TextureRegion>[] pottyRun = new Animation[4];
-
     private int direction = 0;
     private float stateTimer;
 
@@ -53,56 +54,56 @@ public class Potty extends Sprite {
         bDef.type = BodyDef.BodyType.DynamicBody;
         b2body = world.createBody(bDef);
 
-        b2body.setLinearDamping(7f);
+        b2body.setLinearDamping(9f);
 
         FixtureDef fdef = new FixtureDef();
         CircleShape shape = new CircleShape();
-        shape.setRadius(1f);
-
+        shape.setRadius(0.7f);
         fdef.shape = shape;
-        b2body.createFixture(fdef);
+
+        fdef.filter.categoryBits = Hero.POTTY_BIT;
+
+        b2body.createFixture(fdef).setUserData(this);
     }
 
     public void update(float dt) {
         setPosition(b2body.getPosition().x - getWidth() / 2,
-                b2body.getPosition().y - getHeight() / 2 + 3 / PPM);
+                b2body.getPosition().y - getHeight() / 2 + 6 / PPM);
         setRegion(getFrame(dt));
 
         int dirPreference = direction;
         if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) {
-            move(new Vector2(0, 1));
+            buf_vector2.x = 0;
+            buf_vector2.y = 1;
+            move(buf_vector2);
             dirPreference = 1;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S)) {
-            move(new Vector2(0, -1));
+            buf_vector2.x = 0;
+            buf_vector2.y = -1;
+            move(buf_vector2);
             dirPreference = 0;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)) {
-            move(new Vector2(-1, 0));
+            buf_vector2.x = -1;
+            buf_vector2.y = 0;
+            move(buf_vector2);
             dirPreference = 3;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
-            move(new Vector2(1, 0));
+            buf_vector2.x = 1;
+            buf_vector2.y = 0;
+            move(buf_vector2);
             dirPreference = 2;
         }
+
         stateTimer = direction == dirPreference ? stateTimer + dt : 0;
         direction = dirPreference;
     }
 
     private TextureRegion getFrame(float dt) {
         var vel = b2body.getLinearVelocity();
-//        int row;
-//        if (Math.abs(vel.y) * 0.9 > Math.abs(vel.x)) {
-//            if(vel.y <= 0) row = 0;
-//            else row = 1;
-//        } else {
-//            if(vel.x >= 0) row = 2;
-//            else row = 3;
-//        }
-//
-//        stateTimer = direction == row ? stateTimer + dt : 0;
-//        direction = row;
-        if (Math.abs(vel.x) + Math.abs(vel.y) < 0.3) {
+        if (Math.abs(vel.x) + Math.abs(vel.y) < 0.4) {
             return pottyStand[direction];
         } else {
             return pottyRun[direction].getKeyFrame(stateTimer, true);
