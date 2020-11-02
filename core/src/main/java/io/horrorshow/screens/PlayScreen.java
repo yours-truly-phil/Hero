@@ -76,7 +76,6 @@ public class PlayScreen extends HeroScreen {
 
     @Override
     public void render(float dt) {
-        long start = System.nanoTime();
         Gdx.gl.glClearColor(0.2f, 0.3f, 0.4f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -94,8 +93,6 @@ public class PlayScreen extends HeroScreen {
         b2dWorld.renderDebug(gameCam);
 
         hud.render(dt);
-        long dur = System.nanoTime() - start;
-        if (dur / 1_000_000_000f > 1 / 60f) System.out.println(dur / 1000 + "µs, ");
     }
 
     @Override
