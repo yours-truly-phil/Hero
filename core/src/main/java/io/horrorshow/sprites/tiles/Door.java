@@ -33,7 +33,11 @@ public class Door extends InteractiveTileObject {
     public void onContact(Potty potty) {
         for (int x = 0; x <= 3; x++) {
             for (int y = 0; y <= 3; y++) {
-                cells[x][y].setTile(null);
+                if(cells[x][y] != null) {
+                    cells[x][y].setTile(null);
+                } else {
+                    System.out.println("cells["+x+"]["+y+"] is null");
+                }
             }
         }
     }

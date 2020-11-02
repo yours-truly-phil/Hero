@@ -9,6 +9,7 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Disposable;
 import io.horrorshow.tools.B2DWorldCreator;
+import io.horrorshow.tools.OrthogonalTiledMapRendererBleeding;
 import io.horrorshow.tools.WorldContactListener;
 
 import static io.horrorshow.Hero.PPM;
@@ -24,7 +25,7 @@ public class B2DWorld implements Disposable {
         Box2D.init();
         worldCreator = new B2DWorldCreator();
         map = worldCreator.loadTmxMap(tmxLevel);
-        renderer = new OrthogonalTiledMapRenderer(map, 1 / PPM);
+        renderer = new OrthogonalTiledMapRendererBleeding(map, 1 / PPM);
         world = worldCreator.createWorld(map, new Vector2(0, 0)); // no gravity along x/y
         world.setContactListener(new WorldContactListener());
         b2dr = new Box2DDebugRenderer();
@@ -36,12 +37,12 @@ public class B2DWorld implements Disposable {
 
     public void renderBackground(OrthographicCamera camera) {
         renderer.setView(camera);
-        renderer.render(new int[]{0, 1, 2, 3});
+        renderer.render(new int[]{0, 1, 2, 3, 4});
     }
 
     public void renderForeground(OrthographicCamera camera) {
         renderer.setView(camera);
-        renderer.render(new int[]{4});
+        renderer.render(new int[]{5});
     }
 
     public void renderDebug(OrthographicCamera camera) {
