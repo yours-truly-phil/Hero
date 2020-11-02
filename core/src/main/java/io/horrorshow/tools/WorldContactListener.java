@@ -4,6 +4,8 @@ import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
+import io.horrorshow.sprites.Potty;
+import io.horrorshow.sprites.tiles.InteractiveTileObject;
 
 import static io.horrorshow.Hero.*;
 
@@ -19,6 +21,14 @@ public class WorldContactListener implements ContactListener {
                 + getNameByBits(bitsA) + " and " + getNameByBits(bitsB));
 
         int cDef = fixA.getFilterData().categoryBits | fixB.getFilterData().categoryBits;
+        switch (cDef) {
+            case POTTY_BIT | DOOR_BIT:
+                if (bitsA == POTTY_BIT)
+                    ((InteractiveTileObject) fixB.getUserData()).onContact((Potty) fixA.getUserData());
+                else
+                    ((InteractiveTileObject) fixA.getUserData()).onContact((Potty) fixB.getUserData());
+                break;
+        }
     }
 
     private String getNameByBits(short bitsA) {

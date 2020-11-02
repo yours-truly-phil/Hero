@@ -121,5 +121,6 @@ public class MainMenu extends HeroScreen {
         batch.dispose();
         font.dispose();
         shapeRenderer.dispose();
+        bolb.getTexture().dispose();
     }
 }

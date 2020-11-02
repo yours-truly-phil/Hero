@@ -20,7 +20,7 @@ public abstract class InteractiveTileObject {
         this.object = object;
         this.world = world;
         this.map = map;
-        this.bounds = ((RectangleMapObject) object).getRectangle();
+        this.bounds = object.getRectangle();
 
         BodyDef bdef = new BodyDef();
         FixtureDef fdef = new FixtureDef();

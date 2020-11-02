@@ -2,22 +2,41 @@ package io.horrorshow.sprites.tiles;
 
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.physics.box2d.World;
 import io.horrorshow.Hero;
 import io.horrorshow.sprites.Potty;
 
 public class Door extends InteractiveTileObject {
-    private TiledMapTileSet tileSet;
+    private final TiledMapTileLayer.Cell[][] cells = new TiledMapTileLayer.Cell[4][4];
+
     public Door(World world, TiledMap map, RectangleMapObject object) {
         super(world, map, object);
-        tileSet = map.getTileSets().getTileSet("overworld-tileset");
+//        TiledMapTileSet tileSet = map.getTileSets().getTileSet("overworld-tileset");
         fixture.setUserData(this);
         setCategoryFilter(Hero.DOOR_BIT);
+
+        setCells();
+    }
+
+    private void setCells() {
+        var x1 = (int) body.getPosition().x - 2;
+        var y1 = (int) body.getPosition().y - 2;
+        var layer = ((TiledMapTileLayer) map.getLayers().get("objects"));
+        for (int x = 0; x <= 3; x++) {
+            for (int y = 0; y <= 3; y++) {
+                cells[x][y] = layer.getCell(x1 + x, y1 + y);
+            }
+        }
     }
 
     @Override
     public void onContact(Potty potty) {
-
+        for (int x = 0; x <= 3; x++) {
+            for (int y = 0; y <= 3; y++) {
+                cells[x][y].setTile(null);
+            }
+        }
     }
 }
