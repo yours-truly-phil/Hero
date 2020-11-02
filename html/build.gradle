@@ -46,6 +46,8 @@ dependencies {
 	implementation "com.badlogicgames.ashley:ashley:$ashleyVersion:sources"
 	implementation "com.badlogicgames.gdx:gdx-ai:$aiVersion:sources"
 
+    // StringF.format() formic
+    api 'com.github.tommyettinger:formic:0.1.4:sources'
 }
 
 import org.akhikhl.gretty.AppBeforeIntegrationTestTask

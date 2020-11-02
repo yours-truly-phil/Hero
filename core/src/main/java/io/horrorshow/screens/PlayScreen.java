@@ -1,7 +1,10 @@
 package io.horrorshow.screens;
 
+import box2dLight.PointLight;
+import box2dLight.RayHandler;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -28,6 +31,8 @@ public class PlayScreen extends HeroScreen {
     private final Potty potty;
 
     private final TextureAtlas atlas;
+    private final RayHandler rayHandler;
+    private final PointLight myLight;
     public SpriteBatch batch;
 
     public PlayScreen(Hero game) {
@@ -48,6 +53,11 @@ public class PlayScreen extends HeroScreen {
         gameCam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
 
         potty = new Potty(b2dWorld.world, atlas);
+
+        rayHandler = new RayHandler(b2dWorld.world);
+        rayHandler.setAmbientLight(0.5f);
+
+        myLight = new PointLight(rayHandler, 200, Color.ORANGE, 16.f, 0, 0);
     }
 
     @Override
@@ -63,6 +73,10 @@ public class PlayScreen extends HeroScreen {
         gameCam.position.x = pottyPos.x;
         gameCam.position.y = pottyPos.y;
         gameCam.update();
+
+        myLight.setPosition(pottyPos);
+        rayHandler.update();
+        rayHandler.setCombinedMatrix(gameCam);
     }
 
     private void handleInput(float dt) {
@@ -83,6 +97,8 @@ public class PlayScreen extends HeroScreen {
 
         b2dWorld.renderBackground(gameCam);
 
+        rayHandler.render();
+
         batch.begin();
         batch.setProjectionMatrix(gameCam.combined);
         potty.draw(batch);
@@ -100,6 +116,17 @@ public class PlayScreen extends HeroScreen {
         super.resize(width, height);
         hud.resize(width, height);
         gamePort.update(width, height);
+
+        fixBox2DLightsViewportResize(width, height);
+
+    }
+
+    private void fixBox2DLightsViewportResize(int width, int height) {
+        int gutterW = gamePort.getLeftGutterWidth();
+        int gutterH = gamePort.getTopGutterHeight();
+        int rhWidth = width - (2 * gutterW);
+        int rhHeight = height - (2 * gutterH);
+        rayHandler.useCustomViewport(gutterW, gutterH, rhWidth, rhHeight);
     }
 
     @Override
@@ -124,5 +151,6 @@ public class PlayScreen extends HeroScreen {
         hud.dispose();
         batch.dispose();
         atlas.dispose();
+        rayHandler.dispose();
     }
 }

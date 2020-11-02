@@ -1,6 +1,8 @@
 package io.horrorshow;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import io.horrorshow.screens.MainMenu;
 
 public class Hero extends Game {
@@ -15,6 +17,8 @@ public class Hero extends Game {
 
     @Override
     public void create() {
+        Gdx.app.setLogLevel(Application.LOG_DEBUG);
+        Gdx.app.log("Hero", "onCreate()");
         setScreen(new MainMenu(this));
     }
 }

@@ -1,5 +1,6 @@
 package io.horrorshow.tools;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
@@ -8,6 +9,7 @@ import io.horrorshow.sprites.Potty;
 import io.horrorshow.sprites.tiles.InteractiveTileObject;
 
 import static io.horrorshow.Hero.*;
+import static text.formic.Stringf.format;
 
 public class WorldContactListener implements ContactListener {
     @Override
@@ -17,8 +19,8 @@ public class WorldContactListener implements ContactListener {
 
         var bitsA = fixA.getFilterData().categoryBits;
         var bitsB = fixB.getFilterData().categoryBits;
-        System.out.println("BeginContact between "
-                + getNameByBits(bitsA) + " and " + getNameByBits(bitsB));
+
+        Gdx.app.log("BeginContact", format("BeginContact between %s and %s%n", getNameByBits(bitsA), getNameByBits(bitsB)));
 
         int cDef = fixA.getFilterData().categoryBits | fixB.getFilterData().categoryBits;
         switch (cDef) {

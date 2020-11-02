@@ -1,5 +1,6 @@
 package io.horrorshow.sprites.tiles;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -33,10 +34,10 @@ public class Door extends InteractiveTileObject {
     public void onContact(Potty potty) {
         for (int x = 0; x <= 3; x++) {
             for (int y = 0; y <= 3; y++) {
-                if(cells[x][y] != null) {
+                if (cells[x][y] != null) {
                     cells[x][y].setTile(null);
                 } else {
-                    System.out.println("cells["+x+"]["+y+"] is null");
+                    Gdx.app.log("contact", text.formic.Stringf.format("cells[%d][%d] is null", x, y));
                 }
             }
         }

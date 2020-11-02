@@ -14,4 +14,7 @@ dependencies {
 
     testCompileOnly 'org.projectlombok:lombok:1.18.16'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.16'
+
+    // formic StringF.format() method
+    api 'com.github.tommyettinger:formic:0.1.4'
 }
