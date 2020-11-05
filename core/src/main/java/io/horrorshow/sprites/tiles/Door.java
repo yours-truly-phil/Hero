@@ -6,6 +6,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.physics.box2d.World;
 import io.horrorshow.Hero;
+import io.horrorshow.sprites.Guy;
 import io.horrorshow.sprites.Potty;
 
 public class Door extends InteractiveTileObject {
@@ -32,6 +33,19 @@ public class Door extends InteractiveTileObject {
 
     @Override
     public void onContact(Potty potty) {
+        for (int x = 0; x <= 3; x++) {
+            for (int y = 0; y <= 3; y++) {
+                if (cells[x][y] != null) {
+                    cells[x][y].setTile(null);
+                } else {
+                    Gdx.app.log("contact", text.formic.Stringf.format("cells[%d][%d] is null", x, y));
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onContact(Guy potty) {
         for (int x = 0; x <= 3; x++) {
             for (int y = 0; y <= 3; y++) {
                 if (cells[x][y] != null) {

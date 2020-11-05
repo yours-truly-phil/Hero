@@ -6,6 +6,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.*;
 import io.horrorshow.Hero;
+import io.horrorshow.sprites.Guy;
 import io.horrorshow.sprites.Potty;
 
 public abstract class InteractiveTileObject {
@@ -38,6 +39,8 @@ public abstract class InteractiveTileObject {
     }
 
     public abstract void onContact(Potty potty);
+
+    public abstract void onContact(Guy guy);
 
     public void setCategoryFilter(short filterBit) {
         Filter filter = new Filter();

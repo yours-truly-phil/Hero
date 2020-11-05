@@ -5,6 +5,7 @@ import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
+import io.horrorshow.sprites.Guy;
 import io.horrorshow.sprites.Potty;
 import io.horrorshow.sprites.tiles.InteractiveTileObject;
 
@@ -30,6 +31,12 @@ public class WorldContactListener implements ContactListener {
                 else
                     ((InteractiveTileObject) fixA.getUserData()).onContact((Potty) fixB.getUserData());
                 break;
+            case GUY_BIT | DOOR_BIT:
+                if (bitsA == GUY_BIT)
+                    ((InteractiveTileObject) fixB.getUserData()).onContact((Guy) fixA.getUserData());
+                else
+                    ((InteractiveTileObject) fixA.getUserData()).onContact((Guy) fixB.getUserData());
+                break;
         }
     }
 
@@ -43,6 +50,8 @@ public class WorldContactListener implements ContactListener {
                 return "potty";
             case DOOR_BIT:
                 return "door";
+            case GUY_BIT:
+                return "guy";
             default:
                 return "unknown";
         }

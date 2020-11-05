@@ -1,7 +1,5 @@
 package io.horrorshow.sprites;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -21,6 +19,7 @@ public class Potty extends Sprite {
     public World world;
     public Body b2body;
     private int direction = 0;
+    private int prevDirection = 0;
     private float stateTimer;
 
     public Potty(World world, TextureAtlas atlas) {
@@ -67,42 +66,55 @@ public class Potty extends Sprite {
     }
 
     public void update(float dt) {
+
         setPosition(b2body.getPosition().x - getWidth() / 2,
                 b2body.getPosition().y - getHeight() / 2 + 6 / PPM);
         setRegion(getFrame(dt));
 
-        int dirPreference = direction;
-        if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) {
-            buf_vector2.x = 0;
-            buf_vector2.y = 1;
-            move(buf_vector2);
-            dirPreference = 1;
+//        int dirPreference = direction;
+//        if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) {
+//            buf_vector2.x = 0;
+//            buf_vector2.y = 1;
+//            move(buf_vector2);
+//            dirPreference = 1;
+//        }
+//        if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S)) {
+//            buf_vector2.x = 0;
+//            buf_vector2.y = -1;
+//            move(buf_vector2);
+//            dirPreference = 0;
+//        }
+//        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)) {
+//            buf_vector2.x = -1;
+//            buf_vector2.y = 0;
+//            move(buf_vector2);
+//            dirPreference = 3;
+//        }
+//        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
+//            buf_vector2.x = 1;
+//            buf_vector2.y = 0;
+//            move(buf_vector2);
+//            dirPreference = 2;
+//        }
+//
+//        stateTimer = direction == dirPreference ? stateTimer + dt : 0;
+//        direction = dirPreference;
+        if(prevDirection != direction) {
+            stateTimer = 0;
+            prevDirection = direction;
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S)) {
-            buf_vector2.x = 0;
-            buf_vector2.y = -1;
-            move(buf_vector2);
-            dirPreference = 0;
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)) {
-            buf_vector2.x = -1;
-            buf_vector2.y = 0;
-            move(buf_vector2);
-            dirPreference = 3;
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
-            buf_vector2.x = 1;
-            buf_vector2.y = 0;
-            move(buf_vector2);
-            dirPreference = 2;
-        }
-
-        stateTimer = direction == dirPreference ? stateTimer + dt : 0;
-        direction = dirPreference;
+        stateTimer += dt;
     }
 
     private TextureRegion getFrame(float dt) {
         var vel = b2body.getLinearVelocity();
+        if (Math.abs(vel.x) > Math.abs(vel.y)) {
+            if (vel.x > 0) direction = 2;
+            else direction = 3;
+        } else {
+            if (vel.y > 0) direction = 1;
+            else direction = 0;
+        }
         if (Math.abs(vel.x) + Math.abs(vel.y) < 0.4) {
             return pottyStand[direction];
         } else {
@@ -110,8 +122,12 @@ public class Potty extends Sprite {
         }
     }
 
-    public void move(Vector2 linearImpulse) {
+    public void move(Vector2 dir) {
+        var x = dir.x - b2body.getPosition().x;
+        var y = dir.y - b2body.getPosition().y;
+        var v = new Vector2(x, y);
+        v.nor();
         b2body.applyLinearImpulse(
-                linearImpulse, b2body.getWorldCenter(), true);
+                v, b2body.getWorldCenter(), true);
     }
 }

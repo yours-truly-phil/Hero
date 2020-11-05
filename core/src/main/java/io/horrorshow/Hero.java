@@ -14,6 +14,7 @@ public class Hero extends Game {
     public static final short STATIC_BIT = 1;
     public static final short POTTY_BIT = 2;
     public static final short DOOR_BIT = 4;
+    public static final short GUY_BIT = 8;
 
     @Override
     public void create() {

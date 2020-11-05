@@ -7,33 +7,40 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2D;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import io.horrorshow.Hero;
+import io.horrorshow.events.Registration;
 import io.horrorshow.model.B2DWorld;
 import io.horrorshow.scenes.Hud;
+import io.horrorshow.sprites.Guy;
 import io.horrorshow.sprites.Potty;
 
 import static io.horrorshow.Hero.*;
 
 public class PlayScreen extends HeroScreen {
 
+    public final ParticleEffect pe;
     private final OrthographicCamera gameCam;
     private final Viewport gamePort;
-
     private final Hud hud;
-
     private final B2DWorld b2dWorld;
-
     private final Potty potty;
-
+    private final Guy guy;
     private final TextureAtlas atlas;
     private final RayHandler rayHandler;
     private final PointLight myLight;
+    private final PointLight myLight2;
+    private final Vector2 mouse2D = new Vector2();
+    private final Vector3 mouse3D = new Vector3();
     public SpriteBatch batch;
+    private Registration listener;
 
     public PlayScreen(Hero game) {
         super(game);
@@ -53,11 +60,23 @@ public class PlayScreen extends HeroScreen {
         gameCam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
 
         potty = new Potty(b2dWorld.world, atlas);
+        guy = new Guy(b2dWorld.world, atlas, this);
+        listener = guy.addAttackListener(event -> Gdx.app.log("AttackEvent",
+                "x: " + event.attackPosition.x + ", y: " + event.attackPosition.y));
 
         rayHandler = new RayHandler(b2dWorld.world);
         rayHandler.setAmbientLight(0.5f);
 
         myLight = new PointLight(rayHandler, 200, Color.ORANGE, 16.f, 0, 0);
+        myLight.setSoftnessLength(3);
+        myLight.attachToBody(potty.b2body);
+        myLight2 = new PointLight(rayHandler, 200, Color.TEAL, 16.f, 0, 0);
+        myLight2.setSoftnessLength(3);
+        myLight2.attachToBody(guy.b2body);
+
+        pe = new ParticleEffect();
+        pe.load(Gdx.files.internal("Particles.party"), Gdx.files.internal(""));
+        pe.preAllocateParticles();
     }
 
     @Override
@@ -69,14 +88,30 @@ public class PlayScreen extends HeroScreen {
         b2dWorld.update(dt);
         handleInput(dt);
         potty.update(dt);
-        var pottyPos = potty.b2body.getPosition();
-        gameCam.position.x = pottyPos.x;
-        gameCam.position.y = pottyPos.y;
+        guy.update(dt);
+        var guyPos = guy.b2body.getPosition();
+        gameCam.position.x = guyPos.x;
+        gameCam.position.y = guyPos.y;
         gameCam.update();
 
-        myLight.setPosition(pottyPos);
         rayHandler.update();
         rayHandler.setCombinedMatrix(gameCam);
+
+        myLight2.setDistance(16 / (float) Math.pow(1 + guy.swordTimer, 4));
+
+        pe.update(dt);
+
+        potty.move(curMousePos());
+    }
+
+    private Vector2 curMousePos() {
+        mouse3D.x = Gdx.input.getX();
+        mouse3D.y = Gdx.input.getY();
+        mouse3D.z = 0;
+        gameCam.unproject(mouse3D);
+        mouse2D.x = mouse3D.x;
+        mouse2D.y = mouse3D.y;
+        return mouse2D;
     }
 
     private void handleInput(float dt) {
@@ -85,6 +120,9 @@ public class PlayScreen extends HeroScreen {
         }
         if (Gdx.input.isKeyPressed(Input.Keys.MINUS)) {
             gameCam.zoom += dt;
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.MINUS)) {
+            listener.remove();
         }
     }
 
@@ -101,7 +139,9 @@ public class PlayScreen extends HeroScreen {
 
         batch.begin();
         batch.setProjectionMatrix(gameCam.combined);
+        guy.draw(batch);
         potty.draw(batch);
+        pe.draw(batch);
         batch.end();
 
         b2dWorld.renderForeground(gameCam);
@@ -152,5 +192,10 @@ public class PlayScreen extends HeroScreen {
         batch.dispose();
         atlas.dispose();
         rayHandler.dispose();
+        potty.getTexture().dispose();
+        guy.dispose();
+        pe.dispose();
+        myLight.dispose();
+        myLight2.dispose();
     }
 }
