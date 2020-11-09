@@ -1,4 +1,4 @@
-package io.horrorshow.sprites;
+package io.horrorshow.objects;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;

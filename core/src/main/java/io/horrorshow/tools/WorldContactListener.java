@@ -5,9 +5,9 @@ import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
-import io.horrorshow.sprites.Guy;
-import io.horrorshow.sprites.Potty;
-import io.horrorshow.sprites.tiles.InteractiveTileObject;
+import io.horrorshow.objects.Guy;
+import io.horrorshow.objects.Potty;
+import io.horrorshow.objects.tiles.InteractiveTileObject;
 
 import static io.horrorshow.Hero.*;
 import static text.formic.Stringf.format;

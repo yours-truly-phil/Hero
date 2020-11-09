@@ -1,4 +1,4 @@
-package io.horrorshow.sprites;
+package io.horrorshow.objects;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -71,35 +71,7 @@ public class Potty extends Sprite {
                 b2body.getPosition().y - getHeight() / 2 + 6 / PPM);
         setRegion(getFrame(dt));
 
-//        int dirPreference = direction;
-//        if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) {
-//            buf_vector2.x = 0;
-//            buf_vector2.y = 1;
-//            move(buf_vector2);
-//            dirPreference = 1;
-//        }
-//        if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S)) {
-//            buf_vector2.x = 0;
-//            buf_vector2.y = -1;
-//            move(buf_vector2);
-//            dirPreference = 0;
-//        }
-//        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)) {
-//            buf_vector2.x = -1;
-//            buf_vector2.y = 0;
-//            move(buf_vector2);
-//            dirPreference = 3;
-//        }
-//        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
-//            buf_vector2.x = 1;
-//            buf_vector2.y = 0;
-//            move(buf_vector2);
-//            dirPreference = 2;
-//        }
-//
-//        stateTimer = direction == dirPreference ? stateTimer + dt : 0;
-//        direction = dirPreference;
-        if(prevDirection != direction) {
+        if (prevDirection != direction) {
             stateTimer = 0;
             prevDirection = direction;
         }

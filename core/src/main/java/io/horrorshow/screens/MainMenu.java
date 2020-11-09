@@ -15,6 +15,9 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import io.horrorshow.Hero;
 
+import java.util.List;
+import java.util.UUID;
+
 import static io.horrorshow.Hero.*;
 
 public class MainMenu extends HeroScreen {
@@ -107,6 +110,8 @@ public class MainMenu extends HeroScreen {
             game.setScreen(new PlayScreen(game));
             dispose();
         }
+
+        System.out.println(UUID.randomUUID().toString());
     }
 
     @Override

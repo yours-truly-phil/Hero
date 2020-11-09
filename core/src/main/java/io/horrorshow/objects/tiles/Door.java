@@ -1,4 +1,4 @@
-package io.horrorshow.sprites.tiles;
+package io.horrorshow.objects.tiles;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
@@ -6,8 +6,8 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.physics.box2d.World;
 import io.horrorshow.Hero;
-import io.horrorshow.sprites.Guy;
-import io.horrorshow.sprites.Potty;
+import io.horrorshow.objects.Guy;
+import io.horrorshow.objects.Potty;
 
 public class Door extends InteractiveTileObject {
     private final TiledMapTileLayer.Cell[][] cells = new TiledMapTileLayer.Cell[4][4];

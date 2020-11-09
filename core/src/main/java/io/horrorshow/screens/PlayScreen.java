@@ -19,8 +19,8 @@ import io.horrorshow.Hero;
 import io.horrorshow.events.Registration;
 import io.horrorshow.model.B2DWorld;
 import io.horrorshow.scenes.Hud;
-import io.horrorshow.sprites.Guy;
-import io.horrorshow.sprites.Potty;
+import io.horrorshow.objects.Guy;
+import io.horrorshow.objects.Potty;
 
 import static io.horrorshow.Hero.*;
 

@@ -1,4 +1,4 @@
-package io.horrorshow.sprites.tiles;
+package io.horrorshow.objects.tiles;
 
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -6,8 +6,8 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.*;
 import io.horrorshow.Hero;
-import io.horrorshow.sprites.Guy;
-import io.horrorshow.sprites.Potty;
+import io.horrorshow.objects.Guy;
+import io.horrorshow.objects.Potty;
 
 public abstract class InteractiveTileObject {
     protected World world;

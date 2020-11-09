@@ -1,7 +1,7 @@
 package io.horrorshow.events;
 
 import com.badlogic.gdx.math.Vector2;
-import io.horrorshow.sprites.Guy;
+import io.horrorshow.objects.Guy;
 
 public class AttackEvent extends ComponentEvent<Guy>{
 
