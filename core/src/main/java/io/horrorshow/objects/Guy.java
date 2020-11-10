@@ -17,34 +17,37 @@ import static io.horrorshow.Hero.GUY_BIT;
 
 public class Guy extends Observable implements Disposable {
 
+    public static final float LINEAR_DAMPING = 9f;
+    public static final double RANGE = 1.5;
+    public static final int WALK_IMPULSE = 1;
+    public static final float B2BODY_RADIUS = 0.7f;
+
     public final PlayerState state;
     private final Vector2 buf_vector2 = new Vector2();
 
     private final PlayScreen screen;
-    public World world;
     public Body b2body;
     public Direction orientation = Direction.UP;
 
     public Guy(World world, PlayScreen screen) {
         this.screen = screen;
-        this.world = world;
 
-        defineGuy();
+        defineGuy(world);
 
         state = new PlayerState(this);
     }
 
-    private void defineGuy() {
+    private void defineGuy(World world) {
         BodyDef bDef = new BodyDef();
         bDef.position.set(0, 0);
         bDef.type = BodyDef.BodyType.DynamicBody;
         b2body = world.createBody(bDef);
 
-        b2body.setLinearDamping(9f);
+        b2body.setLinearDamping(LINEAR_DAMPING);
 
         FixtureDef fdef = new FixtureDef();
         CircleShape shape = new CircleShape();
-        shape.setRadius(0.7f);
+        shape.setRadius(B2BODY_RADIUS);
         fdef.shape = shape;
 
         fdef.filter.categoryBits = GUY_BIT;
@@ -59,53 +62,51 @@ public class Guy extends Observable implements Disposable {
     public void update(float dt) {
         state.update(dt);
 
+        buf_vector2.set(0, 0);
         if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) {
-            buf_vector2.x = 0;
-            buf_vector2.y = 1;
-            move(buf_vector2);
+            buf_vector2.y += WALK_IMPULSE;
             orientation = Direction.UP;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S)) {
-            buf_vector2.x = 0;
-            buf_vector2.y = -1;
-            move(buf_vector2);
+            buf_vector2.y -= WALK_IMPULSE;
             orientation = Direction.DOWN;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)) {
-            buf_vector2.x = -1;
-            buf_vector2.y = 0;
-            move(buf_vector2);
+            buf_vector2.x -= WALK_IMPULSE;
             orientation = Direction.LEFT;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
-            buf_vector2.x = 1;
-            buf_vector2.y = 0;
-            move(buf_vector2);
+            buf_vector2.x += WALK_IMPULSE;
             orientation = Direction.RIGHT;
         }
+        move(buf_vector2);
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.J) || Gdx.input.isTouched()) {
-            var pos = b2body.getPosition();
-            switch (orientation) {
-                case UP:
-                    pos.y += 1.5;
-                    break;
-                case DOWN:
-                    pos.y -= 1.5;
-                    break;
-                case LEFT:
-                    pos.x -= 1.5;
-                    break;
-                case RIGHT:
-                    pos.x += 1.5;
-                    break;
-            }
-            screen.pe.setPosition(pos.x, pos.y);
-            screen.pe.start();
-            state.swordHit();
-
-            fireEvent(new AttackEvent(this, pos));
+            swordAttack();
         }
+    }
+
+    private void swordAttack() {
+        var pos = b2body.getPosition();
+        switch (orientation) {
+            case UP:
+                pos.y += RANGE;
+                break;
+            case DOWN:
+                pos.y -= RANGE;
+                break;
+            case LEFT:
+                pos.x -= RANGE;
+                break;
+            case RIGHT:
+                pos.x += RANGE;
+                break;
+        }
+        screen.pe.setPosition(pos.x, pos.y);
+        screen.pe.start();
+        state.swordHit();
+
+        fireEvent(new AttackEvent(this, pos));
     }
 
     public void move(Vector2 linearImpulse) {
