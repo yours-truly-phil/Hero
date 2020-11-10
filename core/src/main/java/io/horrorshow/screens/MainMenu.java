@@ -110,8 +110,6 @@ public class MainMenu extends HeroScreen {
             game.setScreen(new PlayScreen(game));
             dispose();
         }
-
-        System.out.println(UUID.randomUUID().toString());
     }
 
     @Override

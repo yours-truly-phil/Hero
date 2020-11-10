@@ -2,7 +2,7 @@ package io.horrorshow.events;
 
 import java.util.EventObject;
 
-public class ComponentEvent<T extends Component> extends EventObject {
+public class ComponentEvent<T extends Observable> extends EventObject {
     private Command unregisterListenerCommand = null;
     /**
      * Constructs a prototypical Event.

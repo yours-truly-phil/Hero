@@ -1,6 +1,6 @@
 package io.horrorshow.events;
 
-public class Component {
+public class Observable {
 
     private ComponentEventBus eventBus = null;
     protected <T extends ComponentEvent<?>> Registration addListener(

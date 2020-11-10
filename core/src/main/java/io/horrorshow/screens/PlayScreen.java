@@ -18,9 +18,11 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import io.horrorshow.Hero;
 import io.horrorshow.events.Registration;
 import io.horrorshow.model.B2DWorld;
-import io.horrorshow.scenes.Hud;
 import io.horrorshow.objects.Guy;
 import io.horrorshow.objects.Potty;
+import io.horrorshow.renderer.PlayerRenderer;
+import io.horrorshow.scenes.Hud;
+import io.horrorshow.state.PlayerState;
 
 import static io.horrorshow.Hero.*;
 
@@ -39,8 +41,9 @@ public class PlayScreen extends HeroScreen {
     private final PointLight myLight2;
     private final Vector2 mouse2D = new Vector2();
     private final Vector3 mouse3D = new Vector3();
+    private final PlayerRenderer playerRenderer;
+    private final Registration listener;
     public SpriteBatch batch;
-    private Registration listener;
 
     public PlayScreen(Hero game) {
         super(game);
@@ -60,9 +63,11 @@ public class PlayScreen extends HeroScreen {
         gameCam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
 
         potty = new Potty(b2dWorld.world, atlas);
-        guy = new Guy(b2dWorld.world, atlas, this);
+        guy = new Guy(b2dWorld.world, this);
         listener = guy.addAttackListener(event -> Gdx.app.log("AttackEvent",
                 "x: " + event.attackPosition.x + ", y: " + event.attackPosition.y));
+
+        playerRenderer = new PlayerRenderer(guy, atlas);
 
         rayHandler = new RayHandler(b2dWorld.world);
         rayHandler.setAmbientLight(0.5f);
@@ -97,7 +102,12 @@ public class PlayScreen extends HeroScreen {
         rayHandler.update();
         rayHandler.setCombinedMatrix(gameCam);
 
-        myLight2.setDistance(16 / (float) Math.pow(1 + guy.swordTimer, 4));
+        if (guy.state.getState() == PlayerState.State.SWORD) {
+            myLight2.setActive(true);
+            myLight2.setDistance(16 / (float) Math.pow(1 + guy.state.stateTimer(), 4));
+        } else {
+            myLight2.setActive(false);
+        }
 
         pe.update(dt);
 
@@ -139,7 +149,7 @@ public class PlayScreen extends HeroScreen {
 
         batch.begin();
         batch.setProjectionMatrix(gameCam.combined);
-        guy.draw(batch);
+        playerRenderer.render(batch);
         potty.draw(batch);
         pe.draw(batch);
         batch.end();

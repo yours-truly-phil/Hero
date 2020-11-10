@@ -8,10 +8,10 @@ public class ComponentEventBus implements Serializable {
 
     HashMap<Class<? extends ComponentEvent<?>>, ArrayList<ListenerWrapper<?>>> componentEventData =
             new HashMap<>(2);
-    private Component component;
+    private Observable observable;
 
-    public ComponentEventBus(Component component) {
-        this.component = component;
+    public ComponentEventBus(Observable observable) {
+        this.observable = observable;
     }
 
     public <T extends ComponentEvent<?>> Registration addListener(
