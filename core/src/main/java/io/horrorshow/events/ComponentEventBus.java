@@ -1,10 +1,9 @@
 package io.horrorshow.events;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class ComponentEventBus implements Serializable {
+public class ComponentEventBus {
 
     HashMap<Class<? extends ComponentEvent<?>>, ArrayList<ListenerWrapper<?>>> componentEventData =
             new HashMap<>(2);
@@ -18,9 +17,19 @@ public class ComponentEventBus implements Serializable {
             Class<T> eventType, ComponentEventListener<T> listener) {
         ListenerWrapper<T> wrapper = new ListenerWrapper<>(listener);
 
-        componentEventData.computeIfAbsent(eventType, t -> new ArrayList<>(1))
-                .add(wrapper);
-        return Registration.once(() -> removeListener(eventType, wrapper));
+//        componentEventData.computeIfAbsent(eventType, t -> new ArrayList<>(1)).add(wrapper);
+        if(!componentEventData.containsKey(eventType)) {
+            componentEventData.put(eventType, new ArrayList<>());
+        }
+        componentEventData.get(eventType).add(wrapper);
+
+//        return Registration.once(() -> removeListener(eventType, wrapper));
+        return new Registration() {
+            @Override
+            public void remove() {
+                removeListener(eventType, wrapper);
+            }
+        };
     }
 
     private <T extends ComponentEvent<?>> void removeListener(
@@ -61,8 +70,12 @@ public class ComponentEventBus implements Serializable {
                                                                     ListenerWrapper<T> wrapper) {
         Class<T> eventType = (Class<T>) event.getClass();
 
-        event.setUnregisterListenerCommand(() -> {
-            removeListener(eventType, wrapper);
+//        event.setUnregisterListenerCommand(() -> removeListener(eventType, wrapper));
+        event.setUnregisterListenerCommand(new Command() {
+            @Override
+            public void execute() {
+                ComponentEventBus.this.removeListener(eventType, wrapper);
+            }
         });
         wrapper.listener.onComponentEvent(event);
         event.setUnregisterListenerCommand(null);
@@ -75,8 +88,7 @@ public class ComponentEventBus implements Serializable {
         return componentEventData.containsKey(eventType);
     }
 
-    private static class ListenerWrapper<T extends ComponentEvent<?>>
-            implements Serializable {
+    private static class ListenerWrapper<T extends ComponentEvent<?>> {
         private ComponentEventListener<T> listener;
 
         public ListenerWrapper(ComponentEventListener<T> listener) {

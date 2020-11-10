@@ -1,9 +1,8 @@
 package io.horrorshow.events;
 
-import java.io.Serializable;
 import java.util.EventListener;
 
 public interface ComponentEventListener<T extends ComponentEvent<?>>
-        extends EventListener, Serializable {
+        extends EventListener {
     void onComponentEvent(T event);
 }

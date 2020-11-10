@@ -16,6 +16,8 @@ import com.badlogic.gdx.physics.box2d.Box2D;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import io.horrorshow.Hero;
+import io.horrorshow.events.AttackEvent;
+import io.horrorshow.events.ComponentEventListener;
 import io.horrorshow.events.Registration;
 import io.horrorshow.model.B2DWorld;
 import io.horrorshow.objects.Guy;
@@ -64,8 +66,15 @@ public class PlayScreen extends HeroScreen {
 
         potty = new Potty(b2dWorld.world, atlas);
         guy = new Guy(b2dWorld.world, this);
-        listener = guy.addAttackListener(event -> Gdx.app.log("AttackEvent",
-                "x: " + event.attackPosition.x + ", y: " + event.attackPosition.y));
+//        listener = guy.addAttackListener(event -> Gdx.app.log("AttackEvent",
+//                "x: " + event.attackPosition.x + ", y: " + event.attackPosition.y));
+        listener = guy.addAttackListener(new ComponentEventListener<AttackEvent>() {
+            @Override
+            public void onComponentEvent(AttackEvent event) {
+                Gdx.app.log("AttackEvent",
+                        "x: " + event.attackPosition.x + ", y: " + event.attackPosition.y);
+            }
+        });
 
         playerRenderer = new PlayerRenderer(guy, atlas);
 
