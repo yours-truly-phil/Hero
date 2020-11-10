@@ -18,7 +18,7 @@ public class B2DWorld implements Disposable {
     public World world;
     B2DWorldCreator worldCreator;
     OrthogonalTiledMapRenderer renderer;
-    TiledMap map;
+    public TiledMap map;
     Box2DDebugRenderer b2dr;
 
     public B2DWorld(String tmxLevel) {

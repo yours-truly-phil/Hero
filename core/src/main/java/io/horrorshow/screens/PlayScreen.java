@@ -94,10 +94,7 @@ public class PlayScreen extends HeroScreen {
         handleInput(dt);
         potty.update(dt);
         guy.update(dt);
-        var guyPos = guy.b2body.getPosition();
-        gameCam.position.x = guyPos.x;
-        gameCam.position.y = guyPos.y;
-        gameCam.update();
+        updateGameCam();
 
         rayHandler.update();
         rayHandler.setCombinedMatrix(gameCam);
@@ -112,6 +109,20 @@ public class PlayScreen extends HeroScreen {
         pe.update(dt);
 
         potty.move(curMousePos());
+    }
+
+    private void updateGameCam() {
+        var guyPos = guy.b2body.getPosition();
+        var mapProps = b2dWorld.map.getProperties();
+        var minPosX = gamePort.getWorldWidth() / 2;
+        var maxPosX = mapProps.get("width", Integer.class) - minPosX;
+        var minPosY = gamePort.getWorldHeight() / 2;
+        var maxPosY = mapProps.get("height", Integer.class) - minPosY;
+
+        gameCam.position.x = (guyPos.x < minPosX) ? minPosX : Math.min(guyPos.x, maxPosX);
+        gameCam.position.y = (guyPos.y < minPosY) ? minPosY : Math.min(guyPos.y, maxPosY);
+
+        gameCam.update();
     }
 
     private Vector2 curMousePos() {

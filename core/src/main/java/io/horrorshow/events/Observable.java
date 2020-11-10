@@ -3,6 +3,7 @@ package io.horrorshow.events;
 public class Observable {
 
     private ComponentEventBus eventBus = null;
+
     protected <T extends ComponentEvent<?>> Registration addListener(
             Class<T> eventType, ComponentEventListener<T> listener) {
         return getEventBus().addListener(eventType, listener);
@@ -22,6 +23,6 @@ public class Observable {
     }
 
     protected boolean hasListener(Class<? extends ComponentEvent> eventType) {
-        return eventBus != null && eventBus.hasListener(eventType        );
+        return eventBus != null && eventBus.hasListener(eventType);
     }
 }
