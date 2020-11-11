@@ -27,6 +27,7 @@ import io.horrorshow.state.Direction;
 import io.horrorshow.state.PlayerState;
 
 import static io.horrorshow.Hero.*;
+import static text.formic.Stringf.format;
 
 public class PlayScreen extends HeroScreen {
 
@@ -46,6 +47,7 @@ public class PlayScreen extends HeroScreen {
     private final PlayerRenderer playerRenderer;
     private final NPCRenderer pottyRenderer;
     private final Registration listener;
+    private final Registration liftListener;
     public SpriteBatch batch;
 
     public PlayScreen(Hero game) {
@@ -89,10 +91,13 @@ public class PlayScreen extends HeroScreen {
 
         listener = guy.addAttackListener(event -> {
             Gdx.app.log("AttackEvent",
-                    "x: " + event.attackPosition.x + ", y: " + event.attackPosition.y);
+                    format("x: %f, y: %f", event.attackPosition.x, event.attackPosition.y));
             pe.setPosition(event.attackPosition.x, event.attackPosition.y);
             pe.start();
         });
+
+        liftListener = guy.addLiftListener(event -> Gdx.app.log("LiftEvent",
+                format("x: %f, y: %f", event.pos.x, event.pos.y)));
     }
 
     @Override

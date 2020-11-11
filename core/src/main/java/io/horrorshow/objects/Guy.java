@@ -4,10 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
-import io.horrorshow.events.AttackEvent;
-import io.horrorshow.events.ComponentEventListener;
-import io.horrorshow.events.Observable;
-import io.horrorshow.events.Registration;
+import io.horrorshow.events.*;
 import io.horrorshow.state.Direction;
 import io.horrorshow.state.PlayerState;
 
@@ -54,6 +51,10 @@ public class Guy extends Observable {
         return addListener(AttackEvent.class, listener);
     }
 
+    public Registration addLiftListener(ComponentEventListener<LiftEvent> listener) {
+        return addListener(LiftEvent.class, listener);
+    }
+
     public void update(float dt) {
         state.update(dt);
 
@@ -79,16 +80,22 @@ public class Guy extends Observable {
         if (Gdx.input.isKeyJustPressed(Input.Keys.J) || Gdx.input.isTouched()) {
             swordAttack();
         }
-        if(Gdx.input.isKeyJustPressed(Input.Keys.C)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.C)) {
             lift();
         }
     }
 
     private void lift() {
         state.lift();
+        fireEvent(new LiftEvent(this, getAbilityPosition()));
     }
 
     private void swordAttack() {
+        state.swordHit();
+        fireEvent(new AttackEvent(this, getAbilityPosition()));
+    }
+
+    private Vector2 getAbilityPosition() {
         var pos = b2body.getPosition();
         switch (orientation) {
             case UP:
@@ -104,10 +111,7 @@ public class Guy extends Observable {
                 pos.x += RANGE;
                 break;
         }
-
-        state.swordHit();
-
-        fireEvent(new AttackEvent(this, pos));
+        return pos;
     }
 
     public void move(Vector2 linearImpulse) {
