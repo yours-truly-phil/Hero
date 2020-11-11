@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import io.horrorshow.state.Direction;
-import io.horrorshow.state.HasDynamicBody;
+import io.horrorshow.state.NPC;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,13 +16,13 @@ public class NPCRenderer implements Renderer {
 
     private final Map<Direction, TextureRegion> standTexture = new HashMap<>();
     private final Map<Direction, Animation<TextureRegion>> walkAnimations = new HashMap<>();
-    private final HasDynamicBody body;
+    private final NPC npc;
     private final Sprite sprite = new Sprite();
     private final Vector2 offset;
 
-    public NPCRenderer(HasDynamicBody body, TextureAtlas.AtlasRegion region,
+    public NPCRenderer(NPC npc, TextureAtlas.AtlasRegion region,
                        Direction[] texYOrder, int width, int height, Vector2 offset) {
-        this.body = body;
+        this.npc = npc;
         this.offset = offset;
 
         for (int i = 0; i < texYOrder.length; i++) {
@@ -45,7 +45,7 @@ public class NPCRenderer implements Renderer {
 
     @Override
     public void render(SpriteBatch batch) {
-        var pos = body.getBody().getPosition();
+        var pos = npc.getPosition();
         sprite.setPosition(pos.x - sprite.getWidth() / 2 + offset.x / PPM,
                 pos.y - sprite.getHeight() / 2 + offset.y / PPM);
         sprite.setRegion(getFrame());
@@ -53,10 +53,10 @@ public class NPCRenderer implements Renderer {
     }
 
     private TextureRegion getFrame() {
-        if (body.isInMotion()) {
-            return walkAnimations.get(body.getDirection()).getKeyFrame(body.stateTimer(), true);
+        if (npc.isInMotion()) {
+            return walkAnimations.get(npc.getDirection()).getKeyFrame(npc.stateTimer(), true);
         } else {
-            return standTexture.get(body.getDirection());
+            return standTexture.get(npc.getDirection());
         }
     }
 }

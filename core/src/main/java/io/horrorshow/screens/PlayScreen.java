@@ -173,7 +173,6 @@ public class PlayScreen extends HeroScreen {
         batch.begin();
         batch.setProjectionMatrix(gameCam.combined);
         playerRenderer.render(batch);
-//        potty.draw(batch);
         pottyRenderer.render(batch);
         pe.draw(batch);
         batch.end();
@@ -226,7 +225,6 @@ public class PlayScreen extends HeroScreen {
         batch.dispose();
         atlas.dispose();
         rayHandler.dispose();
-        guy.dispose();
         pe.dispose();
         myLight.dispose();
         myLight2.dispose();

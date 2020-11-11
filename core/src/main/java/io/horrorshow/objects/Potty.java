@@ -4,9 +4,9 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import io.horrorshow.Hero;
 import io.horrorshow.state.Direction;
-import io.horrorshow.state.HasDynamicBody;
+import io.horrorshow.state.NPC;
 
-public class Potty implements HasDynamicBody {
+public class Potty implements NPC {
 
     public final Body b2body;
 
@@ -47,8 +47,8 @@ public class Potty implements HasDynamicBody {
     }
 
     @Override
-    public Body getBody() {
-        return b2body;
+    public Vector2 getPosition() {
+        return b2body.getPosition();
     }
 
     @Override

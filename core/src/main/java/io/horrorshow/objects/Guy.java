@@ -4,18 +4,16 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
-import com.badlogic.gdx.utils.Disposable;
 import io.horrorshow.events.AttackEvent;
 import io.horrorshow.events.ComponentEventListener;
 import io.horrorshow.events.Observable;
 import io.horrorshow.events.Registration;
 import io.horrorshow.state.Direction;
-import io.horrorshow.state.HasDynamicBody;
 import io.horrorshow.state.PlayerState;
 
 import static io.horrorshow.Hero.GUY_BIT;
 
-public class Guy extends Observable implements Disposable, HasDynamicBody {
+public class Guy extends Observable {
 
     public static final float LINEAR_DAMPING = 9f;
     public static final double RANGE = 1.5;
@@ -29,7 +27,6 @@ public class Guy extends Observable implements Disposable, HasDynamicBody {
     public Direction orientation = Direction.UP;
 
     public Guy(World world) {
-
         defineGuy(world);
 
         state = new PlayerState(this);
@@ -111,30 +108,5 @@ public class Guy extends Observable implements Disposable, HasDynamicBody {
             b2body.applyLinearImpulse(
                     linearImpulse, b2body.getWorldCenter(), true);
         }
-    }
-
-    @Override
-    public void dispose() {
-
-    }
-
-    @Override
-    public Body getBody() {
-        return b2body;
-    }
-
-    @Override
-    public boolean isInMotion() {
-        return state.isMoving();
-    }
-
-    @Override
-    public Direction getDirection() {
-        return orientation;
-    }
-
-    @Override
-    public float stateTimer() {
-        return state.stateTimer();
     }
 }

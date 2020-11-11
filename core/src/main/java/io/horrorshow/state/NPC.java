@@ -1,9 +1,9 @@
 package io.horrorshow.state;
 
-import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.math.Vector2;
 
-public interface HasDynamicBody {
-    Body getBody();
+public interface NPC {
+    Vector2 getPosition();
 
     boolean isInMotion();
 
