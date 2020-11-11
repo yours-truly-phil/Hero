@@ -11,9 +11,9 @@ import java.util.Map;
 import static io.horrorshow.Hero.PPM;
 import static io.horrorshow.state.Direction.*;
 
-public class PlayerRenderer {
+public class PlayerRenderer implements Renderer {
 
-    private static final Direction[] TEX_Y_DIR_ORDER =
+    public static final Direction[] TEX_Y_DIR_ORDER =
             {DOWN, RIGHT, UP, LEFT};
 
     private final Map<Direction, TextureRegion> standTexture = new HashMap<>();
@@ -49,6 +49,7 @@ public class PlayerRenderer {
         sprite.setRegion(standTexture.get(DOWN));
     }
 
+    @Override
     public void render(SpriteBatch batch) {
         var pos = player.b2body.getPosition();
         sprite.setPosition(pos.x - sprite.getWidth() / 2,

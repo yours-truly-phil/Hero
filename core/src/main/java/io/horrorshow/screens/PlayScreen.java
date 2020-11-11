@@ -20,8 +20,10 @@ import io.horrorshow.events.Registration;
 import io.horrorshow.model.B2DWorld;
 import io.horrorshow.objects.Guy;
 import io.horrorshow.objects.Potty;
+import io.horrorshow.renderer.NPCRenderer;
 import io.horrorshow.renderer.PlayerRenderer;
 import io.horrorshow.scenes.Hud;
+import io.horrorshow.state.Direction;
 import io.horrorshow.state.PlayerState;
 
 import static io.horrorshow.Hero.*;
@@ -42,6 +44,7 @@ public class PlayScreen extends HeroScreen {
     private final Vector2 mouse2D = new Vector2();
     private final Vector3 mouse3D = new Vector3();
     private final PlayerRenderer playerRenderer;
+    private final NPCRenderer pottyRenderer;
     private final Registration listener;
     public SpriteBatch batch;
 
@@ -62,9 +65,12 @@ public class PlayScreen extends HeroScreen {
 
         gameCam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
 
-        potty = new Potty(b2dWorld.world, atlas);
-        guy = new Guy(b2dWorld.world, this);
+        potty = new Potty(b2dWorld.world);
+        pottyRenderer = new NPCRenderer(potty, atlas.findRegion("log"),
+                new Direction[]{Direction.DOWN, Direction.UP, Direction.RIGHT, Direction.LEFT},
+                32, 32, new Vector2(0, 6));
 
+        guy = new Guy(b2dWorld.world);
         playerRenderer = new PlayerRenderer(guy, atlas);
 
         rayHandler = new RayHandler(b2dWorld.world);
@@ -113,7 +119,8 @@ public class PlayScreen extends HeroScreen {
 
         pe.update(dt);
 
-        potty.move(curMousePos());
+//        potty.move(curMousePos());
+        potty.move(new Vector2(guy.b2body.getPosition().x, guy.b2body.getPosition().y));
     }
 
     private void updateGameCam() {
@@ -166,7 +173,8 @@ public class PlayScreen extends HeroScreen {
         batch.begin();
         batch.setProjectionMatrix(gameCam.combined);
         playerRenderer.render(batch);
-        potty.draw(batch);
+//        potty.draw(batch);
+        pottyRenderer.render(batch);
         pe.draw(batch);
         batch.end();
 
@@ -218,7 +226,6 @@ public class PlayScreen extends HeroScreen {
         batch.dispose();
         atlas.dispose();
         rayHandler.dispose();
-        potty.getTexture().dispose();
         guy.dispose();
         pe.dispose();
         myLight.dispose();

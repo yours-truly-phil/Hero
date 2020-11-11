@@ -4,6 +4,9 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import io.horrorshow.screens.MainMenu;
+import io.horrorshow.state.Direction;
+
+import static io.horrorshow.state.Direction.*;
 
 public class Hero extends Game {
     public static final int V_WIDTH = 256;

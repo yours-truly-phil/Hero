@@ -47,7 +47,7 @@ public class PlayerState {
         }
     }
 
-    private boolean isMoving() {
+    public boolean isMoving() {
         var vel = player.b2body.getLinearVelocity();
         return (Math.abs(vel.x) + Math.abs(vel.y)) > 0.4;
     }

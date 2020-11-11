@@ -9,13 +9,13 @@ import io.horrorshow.events.AttackEvent;
 import io.horrorshow.events.ComponentEventListener;
 import io.horrorshow.events.Observable;
 import io.horrorshow.events.Registration;
-import io.horrorshow.screens.PlayScreen;
 import io.horrorshow.state.Direction;
+import io.horrorshow.state.HasDynamicBody;
 import io.horrorshow.state.PlayerState;
 
 import static io.horrorshow.Hero.GUY_BIT;
 
-public class Guy extends Observable implements Disposable {
+public class Guy extends Observable implements Disposable, HasDynamicBody {
 
     public static final float LINEAR_DAMPING = 9f;
     public static final double RANGE = 1.5;
@@ -25,12 +25,10 @@ public class Guy extends Observable implements Disposable {
     public final PlayerState state;
     private final Vector2 buf_vector2 = new Vector2();
 
-    private final PlayScreen screen;
     public Body b2body;
     public Direction orientation = Direction.UP;
 
-    public Guy(World world, PlayScreen screen) {
-        this.screen = screen;
+    public Guy(World world) {
 
         defineGuy(world);
 
@@ -102,8 +100,7 @@ public class Guy extends Observable implements Disposable {
                 pos.x += RANGE;
                 break;
         }
-//        screen.pe.setPosition(pos.x, pos.y);
-//        screen.pe.start();
+
         state.swordHit();
 
         fireEvent(new AttackEvent(this, pos));
@@ -119,5 +116,25 @@ public class Guy extends Observable implements Disposable {
     @Override
     public void dispose() {
 
+    }
+
+    @Override
+    public Body getBody() {
+        return b2body;
+    }
+
+    @Override
+    public boolean isInMotion() {
+        return state.isMoving();
+    }
+
+    @Override
+    public Direction getDirection() {
+        return orientation;
+    }
+
+    @Override
+    public float stateTimer() {
+        return state.stateTimer();
     }
 }
