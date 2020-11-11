@@ -3,6 +3,7 @@ package io.horrorshow.state;
 import io.horrorshow.objects.Guy;
 
 public class PlayerState {
+    // TODO proper state machine
     private final Guy player;
     private State state;
     private float stateTimer = 0.0f;
@@ -22,12 +23,21 @@ public class PlayerState {
             selectDefaultState();
         }
         if (stateTimer > state.duration) {
-            resetToDefault();
+            if (state == State.LIFT) {
+                carry();
+            } else {
+                resetToDefault();
+            }
         }
     }
 
+    private void carry() {
+        state = State.CARRY;
+        stateTimer = 0.0f;
+    }
+
     public boolean canMove() {
-        return isDefaultState();
+        return isDefaultState() || state == State.CARRY;
     }
 
     private boolean isDefaultState() {
@@ -61,10 +71,21 @@ public class PlayerState {
         return state;
     }
 
+    public void lift() {
+        if (state == State.CARRY) {
+            resetToDefault();
+        } else {
+            state = State.LIFT;
+            stateTimer = 0.0f;
+        }
+    }
+
     public enum State {
         STAND(Float.MAX_VALUE),
         WALK(Float.MAX_VALUE),
-        SWORD(0.4f);
+        SWORD(0.4f),
+        LIFT(0.9f),
+        CARRY(Float.MAX_VALUE);
 
         public float duration;
 

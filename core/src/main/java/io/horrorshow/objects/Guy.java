@@ -79,6 +79,13 @@ public class Guy extends Observable {
         if (Gdx.input.isKeyJustPressed(Input.Keys.J) || Gdx.input.isTouched()) {
             swordAttack();
         }
+        if(Gdx.input.isKeyJustPressed(Input.Keys.C)) {
+            lift();
+        }
+    }
+
+    private void lift() {
+        state.lift();
     }
 
     private void swordAttack() {
