@@ -102,8 +102,8 @@ public class Guy extends Observable implements Disposable {
                 pos.x += RANGE;
                 break;
         }
-        screen.pe.setPosition(pos.x, pos.y);
-        screen.pe.start();
+//        screen.pe.setPosition(pos.x, pos.y);
+//        screen.pe.start();
         state.swordHit();
 
         fireEvent(new AttackEvent(this, pos));

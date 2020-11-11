@@ -17,19 +17,9 @@ public class ComponentEventBus {
             Class<T> eventType, ComponentEventListener<T> listener) {
         ListenerWrapper<T> wrapper = new ListenerWrapper<>(listener);
 
-//        componentEventData.computeIfAbsent(eventType, t -> new ArrayList<>(1)).add(wrapper);
-        if(!componentEventData.containsKey(eventType)) {
-            componentEventData.put(eventType, new ArrayList<>());
-        }
-        componentEventData.get(eventType).add(wrapper);
+        componentEventData.computeIfAbsent(eventType, t -> new ArrayList<>(1)).add(wrapper);
 
-//        return Registration.once(() -> removeListener(eventType, wrapper));
-        return new Registration() {
-            @Override
-            public void remove() {
-                removeListener(eventType, wrapper);
-            }
-        };
+        return Registration.once(() -> removeListener(eventType, wrapper));
     }
 
     private <T extends ComponentEvent<?>> void removeListener(
@@ -70,13 +60,8 @@ public class ComponentEventBus {
                                                                     ListenerWrapper<T> wrapper) {
         Class<T> eventType = (Class<T>) event.getClass();
 
-//        event.setUnregisterListenerCommand(() -> removeListener(eventType, wrapper));
-        event.setUnregisterListenerCommand(new Command() {
-            @Override
-            public void execute() {
-                ComponentEventBus.this.removeListener(eventType, wrapper);
-            }
-        });
+        event.setUnregisterListenerCommand(() -> removeListener(eventType, wrapper));
+
         wrapper.listener.onComponentEvent(event);
         event.setUnregisterListenerCommand(null);
     }

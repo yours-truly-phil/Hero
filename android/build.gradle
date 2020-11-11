@@ -35,7 +35,13 @@ android {
 		targetSdkVersion 30
 		versionCode 1
 		versionName "1.0"
+        multiDexEnabled true // added this because liftoff does
 	}
+    compileOptions {
+        sourceCompatibility "1.8" // everything over java 8 throws errors
+        targetCompatibility "1.8"
+//        coreLibraryDesugaringEnabled true // liftoff added this, but build won't work if enabled
+    }
 }
 
 repositories {
