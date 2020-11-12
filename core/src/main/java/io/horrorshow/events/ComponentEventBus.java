@@ -7,10 +7,8 @@ public class ComponentEventBus {
 
     HashMap<Class<? extends ComponentEvent<?>>, ArrayList<ListenerWrapper<?>>> componentEventData =
             new HashMap<>(2);
-    private Observable observable;
 
-    public ComponentEventBus(Observable observable) {
-        this.observable = observable;
+    public ComponentEventBus() {
     }
 
     public <T extends ComponentEvent<?>> Registration addListener(

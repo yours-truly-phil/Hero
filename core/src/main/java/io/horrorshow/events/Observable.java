@@ -11,7 +11,7 @@ public class Observable {
 
     protected ComponentEventBus getEventBus() {
         if (eventBus == null) {
-            eventBus = new ComponentEventBus(this);
+            eventBus = new ComponentEventBus();
         }
         return eventBus;
     }

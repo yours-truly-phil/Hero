@@ -24,7 +24,7 @@ import io.horrorshow.renderer.NPCRenderer;
 import io.horrorshow.renderer.PlayerRenderer;
 import io.horrorshow.scenes.Hud;
 import io.horrorshow.state.Direction;
-import io.horrorshow.state.PlayerState;
+import io.horrorshow.state.player.MeleeAtkState;
 
 import static io.horrorshow.Hero.*;
 import static text.formic.Stringf.format;
@@ -115,9 +115,9 @@ public class PlayScreen extends HeroScreen {
         rayHandler.update();
         rayHandler.setCombinedMatrix(gameCam);
 
-        if (guy.state.getState() == PlayerState.State.SWORD) {
+        if (guy.currentState instanceof MeleeAtkState) {
             myLight2.setActive(true);
-            myLight2.setDistance(16 / (float) Math.pow(1 + guy.state.stateTimer(), 4));
+            myLight2.setDistance(16 / (float) Math.pow(1 + guy.currentState.getStateTimer(), 4));
         } else {
             myLight2.setActive(false);
         }
@@ -161,6 +161,7 @@ public class PlayScreen extends HeroScreen {
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.MINUS)) {
             listener.remove();
+            liftListener.remove();
         }
     }
 
@@ -230,6 +231,8 @@ public class PlayScreen extends HeroScreen {
         batch.dispose();
         atlas.dispose();
         rayHandler.dispose();
+        listener.remove();
+        liftListener.remove();
         pe.dispose();
         myLight.dispose();
         myLight2.dispose();

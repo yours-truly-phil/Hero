@@ -33,10 +33,6 @@ public class PlayerRenderer implements Renderer {
             standTexture.put(TEX_Y_DIR_ORDER[y], new TextureRegion(region, 0, y * 32, 32, 32));
             carryStand.put(TEX_Y_DIR_ORDER[y], new TextureRegion(region, 4 * 32, 4 * 32 + y * 32, 32, 32));
         }
-//        standTexture.put(DOWN, new TextureRegion(region, 0, 0, 32, 32));
-//        standTexture.put(RIGHT, new TextureRegion(region, 0, 32, 32, 32));
-//        standTexture.put(UP, new TextureRegion(region, 0, 2 * 32, 32, 32));
-//        standTexture.put(LEFT, new TextureRegion(region, 0, 3 * 32, 32, 32));
 
         Array<TextureRegion> frames = new Array<>();
         for (int y = 0; y < 4; y++) {
@@ -80,23 +76,34 @@ public class PlayerRenderer implements Renderer {
     }
 
     private TextureRegion getFrame() {
-        var state = player.state;
-        switch (state.getState()) {
-            case WALK:
-                return walkAnimations.get(player.orientation).getKeyFrame(state.stateTimer(), true);
-            case SWORD:
-                return swordAnimations.get(player.orientation).getKeyFrame(state.stateTimer(), false);
-            case LIFT:
-                return lift.get(player.orientation).getKeyFrame(state.stateTimer(), false);
-            case CARRY:
-                if (state.isMoving()) {
-                    return carryWalk.get(player.orientation).getKeyFrame(state.stateTimer(), true);
+        var currentState = player.currentState;
+        StateClass sc = StateClass.valueOf(currentState.getClass().getSimpleName());
+        switch (sc) {
+            case LiftState:
+                return lift.get(player.orientation)
+                        .getKeyFrame(currentState.getStateTimer(), false);
+            case CarryState:
+                if (player.isMoving()) {
+                    return carryWalk.get(player.orientation)
+                            .getKeyFrame(currentState.getStateTimer(), true);
                 } else {
                     return carryStand.get(player.orientation);
                 }
-            case STAND:
+            case MeleeAtkState:
+                return swordAnimations.get(player.orientation)
+                        .getKeyFrame(currentState.getStateTimer(), false);
+            case DefaultState:
             default:
-                return standTexture.get(player.orientation);
+                if (player.isMoving()) {
+                    return walkAnimations.get(player.orientation)
+                            .getKeyFrame(currentState.getStateTimer(), true);
+                } else {
+                    return standTexture.get(player.orientation);
+                }
         }
+    }
+
+    enum StateClass {
+        CarryState, DefaultState, LiftState, MeleeAtkState
     }
 }
