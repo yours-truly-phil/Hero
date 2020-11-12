@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2D;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import io.horrorshow.Hero;
@@ -25,6 +26,9 @@ import io.horrorshow.renderer.PlayerRenderer;
 import io.horrorshow.scenes.Hud;
 import io.horrorshow.state.Direction;
 import io.horrorshow.state.player.MeleeAtkState;
+import text.formic.Stringf;
+
+import java.util.Arrays;
 
 import static io.horrorshow.Hero.*;
 import static text.formic.Stringf.format;
@@ -49,6 +53,8 @@ public class PlayScreen extends HeroScreen {
     private final Registration listener;
     private final Registration liftListener;
     public SpriteBatch batch;
+
+    private BenchBuf benchBuf = new BenchBuf();
 
     public PlayScreen(Hero game) {
         super(game);
@@ -167,6 +173,10 @@ public class PlayScreen extends HeroScreen {
 
     @Override
     public void render(float dt) {
+        benchmark(() -> renderAndUpdate(dt));
+    }
+
+    private void renderAndUpdate(float dt) {
         Gdx.gl.glClearColor(0.2f, 0.3f, 0.4f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -188,6 +198,19 @@ public class PlayScreen extends HeroScreen {
         b2dWorld.renderDebug(gameCam);
 
         hud.render(dt);
+    }
+
+    private void benchmark(Runnable renderMethod) {
+        long start = TimeUtils.nanoTime();
+
+        renderMethod.run();
+
+        long dur = TimeUtils.timeSinceNanos(start);
+        benchBuf.add(dur);
+        if (benchBuf.idx == benchBuf.durs.length - 1) {
+            Gdx.app.log("RenderBenchmark", Stringf.format("avg: %fµs (max: %fµs min: %fµs)",
+                    benchBuf.avg() / 1000.0, benchBuf.max / 1000.0, benchBuf.min / 1000.0));
+        }
     }
 
     @Override
@@ -236,5 +259,29 @@ public class PlayScreen extends HeroScreen {
         pe.dispose();
         myLight.dispose();
         myLight2.dispose();
+    }
+
+    class BenchBuf {
+        public long max = -1;
+        public long min = Long.MAX_VALUE;
+        long[] durs = new long[60];
+        int idx = 0;
+
+        int add(long dur) {
+            max = Math.max(max, dur);
+            min = Math.min(min, dur);
+            idx++;
+            if (idx == durs.length) {
+                idx = 0;
+                max = -1;
+                min = Long.MAX_VALUE;
+            }
+            durs[idx] = dur;
+            return idx;
+        }
+
+        double avg() {
+            return Arrays.stream(durs).average().orElse(Double.NaN);
+        }
     }
 }
