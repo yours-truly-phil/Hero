@@ -52,9 +52,8 @@ public class PlayScreen extends HeroScreen {
     private final NPCRenderer pottyRenderer;
     private final Registration listener;
     private final Registration liftListener;
+    private final BenchBuf benchBuf = new BenchBuf();
     public SpriteBatch batch;
-
-    private BenchBuf benchBuf = new BenchBuf();
 
     public PlayScreen(Hero game) {
         super(game);
@@ -137,9 +136,9 @@ public class PlayScreen extends HeroScreen {
     private void updateGameCam() {
         var guyPos = guy.b2body.getPosition();
         var mapProps = b2dWorld.map.getProperties();
-        var minPosX = gamePort.getWorldWidth() / 2;
+        var minPosX = gamePort.getWorldWidth() * gameCam.zoom / 2;
         var maxPosX = mapProps.get("width", Integer.class) - minPosX;
-        var minPosY = gamePort.getWorldHeight() / 2;
+        var minPosY = gamePort.getWorldHeight() * gameCam.zoom / 2;
         var maxPosY = mapProps.get("height", Integer.class) - minPosY;
 
         gameCam.position.x = (guyPos.x < minPosX) ? minPosX : Math.min(guyPos.x, maxPosX);
