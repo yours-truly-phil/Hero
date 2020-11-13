@@ -2,7 +2,7 @@ package io.horrorshow.events;
 
 import java.util.EventObject;
 
-public class ComponentEvent<T extends Observable> extends EventObject {
+public class GameEvent<T extends Observable> extends EventObject {
     private Command unregisterListenerCommand = null;
     /**
      * Constructs a prototypical Event.
@@ -13,7 +13,7 @@ public class ComponentEvent<T extends Observable> extends EventObject {
      * @throws IllegalArgumentException
      *         if source is null
      */
-    public ComponentEvent(T source) {
+    public GameEvent(T source) {
         super(source);
     }
 

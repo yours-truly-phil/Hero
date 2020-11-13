@@ -3,16 +3,13 @@ package io.horrorshow.events;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class ComponentEventBus {
+public class EventBus {
 
-    HashMap<Class<? extends ComponentEvent<?>>, ArrayList<ListenerWrapper<?>>> componentEventData =
+    HashMap<Class<? extends GameEvent<?>>, ArrayList<ListenerWrapper<?>>> componentEventData =
             new HashMap<>(2);
 
-    public ComponentEventBus() {
-    }
-
-    public <T extends ComponentEvent<?>> Registration addListener(
-            Class<T> eventType, ComponentEventListener<T> listener) {
+    public <T extends GameEvent<?>> Registration addListener(
+            Class<T> eventType, GameEventListener<T> listener) {
         ListenerWrapper<T> wrapper = new ListenerWrapper<>(listener);
 
         componentEventData.computeIfAbsent(eventType, t -> new ArrayList<>(1)).add(wrapper);
@@ -20,7 +17,7 @@ public class ComponentEventBus {
         return Registration.once(() -> removeListener(eventType, wrapper));
     }
 
-    private <T extends ComponentEvent<?>> void removeListener(
+    private <T extends GameEvent<?>> void removeListener(
             Class<T> eventType, ListenerWrapper<T> wrapper) {
         assert eventType != null;
         assert wrapper != null;
@@ -41,8 +38,8 @@ public class ComponentEventBus {
         }
     }
 
-    public void fireEvent(ComponentEvent event) {
-        Class<? extends ComponentEvent> eventType = event.getClass();
+    public void fireEvent(GameEvent event) {
+        Class<? extends GameEvent> eventType = event.getClass();
         if (!hasListener(eventType)) {
             return;
         }
@@ -54,27 +51,27 @@ public class ComponentEventBus {
         }
     }
 
-    private <T extends ComponentEvent<?>> void fireEventForListener(T event,
-                                                                    ListenerWrapper<T> wrapper) {
+    private <T extends GameEvent<?>> void fireEventForListener(T event,
+                                                               ListenerWrapper<T> wrapper) {
         Class<T> eventType = (Class<T>) event.getClass();
 
         event.setUnregisterListenerCommand(() -> removeListener(eventType, wrapper));
 
-        wrapper.listener.onComponentEvent(event);
+        wrapper.listener.onGameEvent(event);
         event.setUnregisterListenerCommand(null);
     }
 
-    public boolean hasListener(Class<? extends ComponentEvent> eventType) {
+    public boolean hasListener(Class<? extends GameEvent> eventType) {
         if (eventType == null) {
             throw new IllegalArgumentException("Event type cannot be null");
         }
         return componentEventData.containsKey(eventType);
     }
 
-    private static class ListenerWrapper<T extends ComponentEvent<?>> {
-        private ComponentEventListener<T> listener;
+    private static class ListenerWrapper<T extends GameEvent<?>> {
+        private GameEventListener<T> listener;
 
-        public ListenerWrapper(ComponentEventListener<T> listener) {
+        public ListenerWrapper(GameEventListener<T> listener) {
             this.listener = listener;
         }
     }

@@ -16,7 +16,7 @@ public class LiftState implements PlayerState {
     @Override
     public void update(Guy guy, float dt) {
         stateTimer += dt;
-        if(stateTimer > duration) {
+        if (stateTimer > duration) {
             guy.carryState.enterState(guy);
         }
     }
@@ -26,5 +26,6 @@ public class LiftState implements PlayerState {
         Gdx.app.log("EnterState", LiftState.class.getSimpleName());
         stateTimer = 0.0f;
         guy.currentState = this;
+        guy.lift();
     }
 }

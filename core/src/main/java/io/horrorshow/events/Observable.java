@@ -2,27 +2,27 @@ package io.horrorshow.events;
 
 public class Observable {
 
-    private ComponentEventBus eventBus = null;
+    private EventBus eventBus = null;
 
-    protected <T extends ComponentEvent<?>> Registration addListener(
-            Class<T> eventType, ComponentEventListener<T> listener) {
+    protected <T extends GameEvent<?>> Registration addListener(
+            Class<T> eventType, GameEventListener<T> listener) {
         return getEventBus().addListener(eventType, listener);
     }
 
-    protected ComponentEventBus getEventBus() {
+    protected EventBus getEventBus() {
         if (eventBus == null) {
-            eventBus = new ComponentEventBus();
+            eventBus = new EventBus();
         }
         return eventBus;
     }
 
-    protected void fireEvent(ComponentEvent<?> componentEvent) {
-        if (hasListener(componentEvent.getClass())) {
-            getEventBus().fireEvent(componentEvent);
+    protected void fireEvent(GameEvent<?> gameEvent) {
+        if (hasListener(gameEvent.getClass())) {
+            getEventBus().fireEvent(gameEvent);
         }
     }
 
-    protected boolean hasListener(Class<? extends ComponentEvent> eventType) {
+    protected boolean hasListener(Class<? extends GameEvent> eventType) {
         return eventBus != null && eventBus.hasListener(eventType);
     }
 }
