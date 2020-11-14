@@ -36,7 +36,9 @@ run {
     }
 }
 jar {
-    archiveBaseName = appName
+    destinationDirectory = file("$buildDir/lib") // new
+    archiveFileName = "${appName}-${archiveVersion.get()}.jar" // new
+
     //// These can be excluded because they add to the jar size but libGDX 1.9.11 can't use them.
     //// If your libGDX version is 1.9.10 or earlier, or is 1.9.12-SNAPSHOT or later, you can leave
     //// the following line commented; if you use 1.9.11 exactly, or if you use 1.9.12-SNAPSHOT but
@@ -47,9 +49,6 @@ jar {
     from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
     manifest {
         attributes 'Main-Class': project.mainClassName
-    }
-    doLast {
-        file(archivePath).setExecutable(true, false)
     }
 }
 
