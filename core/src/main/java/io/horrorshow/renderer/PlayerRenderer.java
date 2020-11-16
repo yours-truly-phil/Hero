@@ -22,6 +22,9 @@ public class PlayerRenderer implements Renderer {
     private final Map<Direction, Animation<TextureRegion>> lift = new HashMap<>();
     private final Map<Direction, TextureRegion> carryStand = new HashMap<>();
     private final Map<Direction, Animation<TextureRegion>> carryWalk = new HashMap<>();
+    private final Map<Direction, TextureRegion> holdSwordTextures = new HashMap<>();
+    private final Map<Direction, Animation<TextureRegion>> holdSwordWalkAnimations = new HashMap<>();
+    private final Map<Direction, Animation<TextureRegion>> sword360Animations = new HashMap<>();
     private final Guy player;
     private final Sprite sprite = new Sprite();
 
@@ -32,6 +35,7 @@ public class PlayerRenderer implements Renderer {
         for (int y = 0; y < TEX_Y_DIR_ORDER.length; y++) {
             standTexture.put(TEX_Y_DIR_ORDER[y], new TextureRegion(region, 0, y * 32, 32, 32));
             carryStand.put(TEX_Y_DIR_ORDER[y], new TextureRegion(region, 4 * 32, 4 * 32 + y * 32, 32, 32));
+            holdSwordTextures.put(TEX_Y_DIR_ORDER[y], new TextureRegion(region, 3 * 32, 4 * 32 + y * 32, 32, 32));
         }
 
         Array<TextureRegion> frames = new Array<>();
@@ -60,6 +64,18 @@ public class PlayerRenderer implements Renderer {
             }
             carryWalk.put(TEX_Y_DIR_ORDER[y], new Animation<>(0.1f, frames));
             frames.clear();
+            // 360 sword swing
+            for (int x = 0; x < 4; x++) {
+                frames.add(new TextureRegion(region, x * 32, 8 * 32 + y * 32, 32, 32));
+            }
+            sword360Animations.put(TEX_Y_DIR_ORDER[y], new Animation<>(0.1f, frames));
+            frames.clear();
+            // hold sword walking
+            for (int x = 0; x < 2; x++) {
+                frames.add(new TextureRegion(region, 4 * 32 + x * 32, 8 * 32 + y * 32, 32, 32));
+            }
+            holdSwordWalkAnimations.put(TEX_Y_DIR_ORDER[y], new Animation<>(0.25f, frames));
+            frames.clear();
         }
 
         sprite.setBounds(0, 0, 32 / PPM, 32 / PPM);
@@ -73,6 +89,7 @@ public class PlayerRenderer implements Renderer {
                 pos.y - sprite.getHeight() / 2 + 6 / PPM);
         sprite.setRegion(getFrame());
         sprite.draw(batch);
+
     }
 
     private TextureRegion getFrame() {
@@ -92,6 +109,16 @@ public class PlayerRenderer implements Renderer {
             case MeleeAtkState:
                 return swordAnimations.get(player.orientation)
                         .getKeyFrame(currentState.getStateTimer(), false);
+            case HoldSwordState:
+                if (player.isMoving()) {
+                    return holdSwordWalkAnimations.get(player.orientation)
+                            .getKeyFrame(currentState.getStateTimer(), true);
+                } else {
+                    return holdSwordTextures.get(player.orientation);
+                }
+            case Sword360State:
+                return sword360Animations.get(player.orientation)
+                        .getKeyFrame(currentState.getStateTimer(), false);
             case DefaultState:
             default:
                 if (player.isMoving()) {
@@ -104,6 +131,6 @@ public class PlayerRenderer implements Renderer {
     }
 
     enum StateClass {
-        CarryState, DefaultState, LiftState, MeleeAtkState
+        CarryState, DefaultState, LiftState, MeleeAtkState, HoldSwordState, Sword360State
     }
 }

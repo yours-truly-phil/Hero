@@ -22,6 +22,8 @@ public class Guy extends Observable {
     public MeleeAtkState meleeAtkState = new MeleeAtkState();
     public LiftState liftState = new LiftState();
     public CarryState carryState = new CarryState();
+    public HoldSwordState holdSwordState = new HoldSwordState();
+    public Sword360State sword360State = new Sword360State();
 
     public PlayerState currentState = defaultState;
 

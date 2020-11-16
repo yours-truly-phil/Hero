@@ -6,9 +6,10 @@ import io.horrorshow.objects.Guy;
 
 public class MeleeAtkState implements PlayerState {
 
-    private float coolDown = 0.15f;
-    private float duration = 0.3f;
+    public float coolDown = 0.15f;
+    public float duration = 0.4f;
     private float stateTimer = 0.0f;
+    private boolean keyReleased = false;
 
     @Override
     public float getStateTimer() {
@@ -18,13 +19,20 @@ public class MeleeAtkState implements PlayerState {
     @Override
     public void update(Guy guy, float dt) {
         stateTimer += dt;
-        if (Gdx.input.isKeyJustPressed(Input.Keys.J) || Gdx.input.isTouched()) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.J)) {
             if (stateTimer > coolDown) {
                 enterState(guy);
             }
         }
+        if (!Gdx.input.isKeyPressed(Input.Keys.J)) {
+            keyReleased = true;
+        }
         if (stateTimer > duration) {
-            guy.defaultState.enterState(guy);
+            if (keyReleased) {
+                guy.defaultState.enterState(guy);
+            } else {
+                guy.holdSwordState.enterState(guy);
+            }
         }
     }
 
@@ -32,6 +40,7 @@ public class MeleeAtkState implements PlayerState {
     public void enterState(Guy guy) {
         Gdx.app.log("EnterState", MeleeAtkState.class.getSimpleName());
         stateTimer = 0.0f;
+        keyReleased = false;
         guy.currentState = this;
         guy.swordAttack();
     }

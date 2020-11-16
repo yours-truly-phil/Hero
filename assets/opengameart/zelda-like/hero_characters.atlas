@@ -1,26 +1,26 @@
 
 hero_characters.png
-size: 512,256
+size: 512,512
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
 NPC_test
   rotate: false
-  xy: 272, 0
+  xy: 276, 128
   size: 64, 128
   orig: 64, 128
   offset: 0, 0
   index: -1
 character
   rotate: false
-  xy: 0, 0
-  size: 272, 256
-  orig: 272, 256
+  xy: 2, 2
+  size: 272, 384
+  orig: 272, 384
   offset: 0, 0
   index: -1
 log
   rotate: false
-  xy: 272, 128
+  xy: 276, 258
   size: 192, 128
   orig: 192, 128
   offset: 0, 0
