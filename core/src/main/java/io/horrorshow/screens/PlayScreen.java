@@ -187,8 +187,14 @@ public class PlayScreen extends HeroScreen {
 
         batch.begin();
         batch.setProjectionMatrix(gameCam.combined);
-        playerRenderer.render(batch);
-        pottyRenderer.render(batch);
+
+        if (guy.b2body.getPosition().y > potty.b2body.getPosition().y) {
+            playerRenderer.render(batch);
+            pottyRenderer.render(batch);
+        } else {
+            pottyRenderer.render(batch);
+            playerRenderer.render(batch);
+        }
         pe.draw(batch);
         batch.end();
 
@@ -260,13 +266,13 @@ public class PlayScreen extends HeroScreen {
         myLight2.dispose();
     }
 
-    class BenchBuf {
+    static class BenchBuf {
         public long max = -1;
         public long min = Long.MAX_VALUE;
         long[] durs = new long[60];
         int idx = 0;
 
-        int add(long dur) {
+        void add(long dur) {
             max = Math.max(max, dur);
             min = Math.min(min, dur);
             idx++;
@@ -276,7 +282,6 @@ public class PlayScreen extends HeroScreen {
                 min = Long.MAX_VALUE;
             }
             durs[idx] = dur;
-            return idx;
         }
 
         double avg() {

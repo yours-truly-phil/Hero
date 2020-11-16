@@ -3,6 +3,7 @@ package io.horrorshow.events;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+@SuppressWarnings("rawtypes")
 public class EventBus {
 
     HashMap<Class<? extends GameEvent<?>>, ArrayList<ListenerWrapper<?>>> componentEventData =
@@ -69,7 +70,7 @@ public class EventBus {
     }
 
     private static class ListenerWrapper<T extends GameEvent<?>> {
-        private GameEventListener<T> listener;
+        private final GameEventListener<T> listener;
 
         public ListenerWrapper(GameEventListener<T> listener) {
             this.listener = listener;
