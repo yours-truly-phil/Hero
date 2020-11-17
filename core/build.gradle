@@ -2,19 +2,17 @@
 eclipse.project.name = appName + '-core'
 
 dependencies {
-	api "com.badlogicgames.gdx:gdx:$gdxVersion"
-	api "com.badlogicgames.box2dlights:box2dlights:$box2dlightsVersion"
-	api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
-	api "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
-	api "com.badlogicgames.ashley:ashley:$ashleyVersion"
-	api "com.badlogicgames.gdx:gdx-ai:$aiVersion"
+    api "com.badlogicgames.gdx:gdx:$gdxVersion"
+    api "com.badlogicgames.box2dlights:box2dlights:$box2dlightsVersion"
+    api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
+    api "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
+    api "com.badlogicgames.ashley:ashley:$ashleyVersion"
+    api "com.badlogicgames.gdx:gdx-ai:$aiVersion"
 
-    compileOnly 'org.projectlombok:lombok:1.18.16'
-    annotationProcessor 'org.projectlombok:lombok:1.18.16'
+    annotationProcessor "org.projectlombok:lombok:$lombokVersion"
 
-    testCompileOnly 'org.projectlombok:lombok:1.18.16'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.16'
+    testAnnotationProcessor "org.projectlombok:lombok:$lombokVersion"
 
     // formic StringF.format() method
-    api 'com.github.tommyettinger:formic:0.1.4'
+    api "com.github.tommyettinger:formic:$formicVersion"
 }

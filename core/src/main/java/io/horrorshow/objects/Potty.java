@@ -9,6 +9,7 @@ import io.horrorshow.state.NPC;
 public class Potty implements NPC {
 
     public final Body b2body;
+    public final FixtureDef fdef;
 
     private float stateTimer = 0.0f;
 
@@ -20,7 +21,7 @@ public class Potty implements NPC {
 
         b2body.setLinearDamping(9f);
 
-        FixtureDef fdef = new FixtureDef();
+        fdef = new FixtureDef();
         CircleShape shape = new CircleShape();
         shape.setRadius(0.7f);
         fdef.shape = shape;

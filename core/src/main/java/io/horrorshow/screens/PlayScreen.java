@@ -68,7 +68,8 @@ public class PlayScreen extends HeroScreen {
         gameCam = new OrthographicCamera();
         gamePort = new FitViewport(V_WIDTH / PPM, V_HEIGHT / PPM, gameCam);
 
-        b2dWorld = new B2DWorld("opengameart/zelda-like/level.tmx");
+//        b2dWorld = new B2DWorld("opengameart/zelda-like/level.tmx");
+        b2dWorld = new B2DWorld("maps/level1.tmx");
 
         gameCam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
 
@@ -84,6 +85,7 @@ public class PlayScreen extends HeroScreen {
         playerRenderer = new PlayerRenderer(guy, atlas, rayHandler);
 
         myLight = new PointLight(rayHandler, 200, Color.ORANGE, 16.f, 0, 0);
+        myLight.setContactFilter(potty.fdef.filter);
         myLight.setSoftnessLength(3);
         myLight.attachToBody(potty.b2body);
         myLight2 = new PointLight(rayHandler, 200, Color.TEAL, 16.f, 0, 0);
@@ -181,13 +183,10 @@ public class PlayScreen extends HeroScreen {
 
         update(dt);
 
-        b2dWorld.renderBackground(gameCam);
-
-        rayHandler.render();
-
         batch.begin();
         batch.setProjectionMatrix(gameCam.combined);
 
+        b2dWorld.renderBackground(gameCam);
         if (guy.b2body.getPosition().y > potty.b2body.getPosition().y) {
             playerRenderer.render(batch);
             pottyRenderer.render(batch);
@@ -195,12 +194,13 @@ public class PlayScreen extends HeroScreen {
             pottyRenderer.render(batch);
             playerRenderer.render(batch);
         }
+        b2dWorld.renderForeground(gameCam);
         pe.draw(batch);
         batch.end();
 
-        b2dWorld.renderForeground(gameCam);
+        rayHandler.render();
 
-        b2dWorld.renderDebug(gameCam);
+//        b2dWorld.renderDebug(gameCam);
 
         hud.render(dt);
     }

@@ -11,11 +11,16 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
-import io.horrorshow.objects.tiles.Door;
+import io.horrorshow.objects.tiles.NewDoor;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static io.horrorshow.Hero.PPM;
 
 public class B2DWorldCreator {
+
+    public static final String LAYER_STATIC_COLLISION = "walls";
 
     public TiledMap loadTmxMap(String tmxFile) {
         TmxMapLoader mapLoader = new TmxMapLoader();
@@ -25,16 +30,50 @@ public class B2DWorldCreator {
     public World createWorld(TiledMap map, Vector2 gravity) {
         World world = new World(gravity, true);
 
+        Map<String, NewDoor> doorMap = new HashMap<>();
+        Array.ArrayIterator<RectangleMapObject> interactIter = new Array.ArrayIterator<>(
+                map.getLayers().get("interact").getObjects().getByType(RectangleMapObject.class));
+        while (interactIter.hasNext()) {
+            var rectMapObj = interactIter.next();
+            var props = rectMapObj.getProperties();
+            if (props.containsKey("name")) {
+                var name = props.get("name", String.class);
+                var door = new NewDoor(world, map, rectMapObj);
+                doorMap.put(name, door);
+            }
+        }
+        interactIter = new Array.ArrayIterator<>(
+                map.getLayers().get("mutables").getObjects().getByType(RectangleMapObject.class));
+        while (interactIter.hasNext()) {
+            var rectMapObj = interactIter.next();
+            var props = rectMapObj.getProperties();
+            if (props.containsKey("name")) {
+                var name = props.get("name", String.class);
+                doorMap.get(name).setBoundsCells(rectMapObj.getRectangle());
+            }
+        }
+
+        addStaticWallsToWorld(map, world);
+//
+//        Array.ArrayIterator<RectangleMapObject> doorIter = new Array.ArrayIterator<>(
+//                map.getLayers().get("door").getObjects().getByType(RectangleMapObject.class));
+//        while (doorIter.hasNext()) {
+//            new Door(world, map, doorIter.next());
+//        }
+        return world;
+    }
+
+    private void addStaticWallsToWorld(TiledMap map, World world) {
         BodyDef bdef = new BodyDef();
-        PolygonShape shape = new PolygonShape();
+//        PolygonShape shape = new PolygonShape();
         FixtureDef fdef = new FixtureDef();
 
-        for (MapObject object : map.getLayers().get("collision").getObjects()) {
+        for (MapObject object : map.getLayers().get(LAYER_STATIC_COLLISION).getObjects()) {
             if (object instanceof RectangleMapObject) {
                 fdef.shape = getRectangle((RectangleMapObject) object);
             } else if (object instanceof EllipseMapObject) {
                 fdef.shape = getEllipse((EllipseMapObject) object);
-                if (shape.getRadius() == 0) {
+                if (fdef.shape.getRadius() == 0) {
                     Gdx.app.error("mapobject", "invalid ellipse object, radius 0");
                     continue;
                 }
@@ -54,13 +93,6 @@ public class B2DWorldCreator {
 
             body.createFixture(fdef);
         }
-
-        Array.ArrayIterator<RectangleMapObject> doorIter = new Array.ArrayIterator<>(
-                map.getLayers().get("door").getObjects().getByType(RectangleMapObject.class));
-        while (doorIter.hasNext()) {
-            new Door(world, map, doorIter.next());
-        }
-        return world;
     }
 
     private Shape getRectangle(RectangleMapObject rectangleObject) {

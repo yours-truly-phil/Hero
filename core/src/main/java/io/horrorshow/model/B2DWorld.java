@@ -35,12 +35,12 @@ public class B2DWorld implements Disposable {
 
     public void renderBackground(OrthographicCamera camera) {
         renderer.setView(camera);
-        renderer.render(new int[]{0, 1, 2, 3, 4});
+        renderer.render(new int[]{0, 1, 3}); // layer 2 hold tiles for objects in open state
     }
 
     public void renderForeground(OrthographicCamera camera) {
         renderer.setView(camera);
-        renderer.render(new int[]{5});
+        renderer.render(new int[]{4});
     }
 
     public void renderDebug(OrthographicCamera camera) {
