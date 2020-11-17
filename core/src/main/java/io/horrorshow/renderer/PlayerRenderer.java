@@ -1,9 +1,13 @@
 package io.horrorshow.renderer;
 
+import box2dLight.PointLight;
+import box2dLight.RayHandler;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.utils.Array;
 import io.horrorshow.objects.Guy;
 import io.horrorshow.state.Direction;
+import io.horrorshow.state.player.PlayerState;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,10 +29,11 @@ public class PlayerRenderer implements Renderer {
     private final Map<Direction, TextureRegion> holdSwordTextures = new HashMap<>();
     private final Map<Direction, Animation<TextureRegion>> holdSwordWalkAnimations = new HashMap<>();
     private final Map<Direction, Animation<TextureRegion>> sword360Animations = new HashMap<>();
+    private final PointLight swordLight;
     private final Guy player;
     private final Sprite sprite = new Sprite();
 
-    public PlayerRenderer(Guy player, TextureAtlas atlas) {
+    public PlayerRenderer(Guy player, TextureAtlas atlas, RayHandler rayHandler) {
         this.player = player;
         var region = atlas.findRegion("character");
 
@@ -74,27 +79,37 @@ public class PlayerRenderer implements Renderer {
             for (int x = 0; x < 2; x++) {
                 frames.add(new TextureRegion(region, 4 * 32 + x * 32, 8 * 32 + y * 32, 32, 32));
             }
-            holdSwordWalkAnimations.put(TEX_Y_DIR_ORDER[y], new Animation<>(0.25f, frames));
+            holdSwordWalkAnimations.put(TEX_Y_DIR_ORDER[y], new Animation<>(0.1f, frames));
             frames.clear();
         }
 
         sprite.setBounds(0, 0, 32 / PPM, 32 / PPM);
         sprite.setRegion(standTexture.get(DOWN));
+
+        swordLight = new PointLight(rayHandler, 200, Color.RED, 16.f,
+                player.swordState.position.x, player.swordState.position.y);
     }
 
     @Override
     public void render(SpriteBatch batch) {
+        var currentState = player.currentState;
+        StateClass state = StateClass.valueOf(currentState.getClass().getSimpleName());
+        updateLights(player);
         var pos = player.b2body.getPosition();
         sprite.setPosition(pos.x - sprite.getWidth() / 2,
                 pos.y - sprite.getHeight() / 2 + 6 / PPM);
-        sprite.setRegion(getFrame());
+        sprite.setRegion(getFrame(state, currentState));
         sprite.draw(batch);
+    }
+
+    private void updateLights(Guy player) {
+        var swordState = player.swordState;
+        swordLight.setActive(swordState.isActive);
+        swordLight.setPosition(swordState.position.x, swordState.position.y);
 
     }
 
-    private TextureRegion getFrame() {
-        var currentState = player.currentState;
-        StateClass sc = StateClass.valueOf(currentState.getClass().getSimpleName());
+    private TextureRegion getFrame(StateClass sc, PlayerState currentState) {
         switch (sc) {
             case LiftState:
                 return lift.get(player.orientation)

@@ -27,6 +27,8 @@ public class Guy extends Observable {
 
     public PlayerState currentState = defaultState;
 
+    public SwordState swordState = new SwordState();
+
     public Guy(World world) {
         BodyDef bDef = new BodyDef();
         bDef.position.set(0, 0);

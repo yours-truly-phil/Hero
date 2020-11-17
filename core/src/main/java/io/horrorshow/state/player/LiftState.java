@@ -27,5 +27,6 @@ public class LiftState implements PlayerState {
         stateTimer = 0.0f;
         guy.currentState = this;
         guy.lift();
+        guy.swordState.isActive = false;
     }
 }

@@ -34,6 +34,7 @@ public class MeleeAtkState implements PlayerState {
                 guy.holdSwordState.enterState(guy);
             }
         }
+        guy.swordState.update(guy.b2body.getPosition(), guy.orientation, 1.5f);
     }
 
     @Override
@@ -43,5 +44,6 @@ public class MeleeAtkState implements PlayerState {
         keyReleased = false;
         guy.currentState = this;
         guy.swordAttack();
+        guy.swordState.isActive = true;
     }
 }

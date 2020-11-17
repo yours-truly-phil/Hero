@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Box2D;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Disposable;
@@ -16,13 +15,12 @@ import static io.horrorshow.Hero.PPM;
 
 public class B2DWorld implements Disposable {
     public World world;
+    public TiledMap map;
     B2DWorldCreator worldCreator;
     OrthogonalTiledMapRenderer renderer;
-    public TiledMap map;
     Box2DDebugRenderer b2dr;
 
     public B2DWorld(String tmxLevel) {
-        Box2D.init();
         worldCreator = new B2DWorldCreator();
         map = worldCreator.loadTmxMap(tmxLevel);
         renderer = new OrthogonalTiledMapRendererBleeding(map, 1 / PPM);

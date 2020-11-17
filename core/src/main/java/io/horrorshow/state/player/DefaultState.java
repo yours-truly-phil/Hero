@@ -30,5 +30,6 @@ public class DefaultState extends CanMoveState implements PlayerState {
         Gdx.app.log("EnterState", DefaultState.class.getSimpleName());
         stateTimer = 0.0f;
         guy.currentState = this;
+        guy.swordState.isActive = false;
     }
 }

@@ -72,16 +72,16 @@ public class PlayScreen extends HeroScreen {
 
         gameCam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
 
+        rayHandler = new RayHandler(b2dWorld.world);
+        rayHandler.setAmbientLight(0.5f);
+
         potty = new Potty(b2dWorld.world);
         pottyRenderer = new NPCRenderer(potty, atlas.findRegion("log"),
                 new Direction[]{Direction.DOWN, Direction.UP, Direction.RIGHT, Direction.LEFT},
                 32, 32, new Vector2(0, 6));
 
         guy = new Guy(b2dWorld.world);
-        playerRenderer = new PlayerRenderer(guy, atlas);
-
-        rayHandler = new RayHandler(b2dWorld.world);
-        rayHandler.setAmbientLight(0.5f);
+        playerRenderer = new PlayerRenderer(guy, atlas, rayHandler);
 
         myLight = new PointLight(rayHandler, 200, Color.ORANGE, 16.f, 0, 0);
         myLight.setSoftnessLength(3);
