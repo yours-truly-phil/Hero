@@ -88,6 +88,7 @@ public class PlayScreen extends HeroScreen {
         myLight.setContactFilter(potty.fdef.filter);
         myLight.setSoftnessLength(3);
         myLight.attachToBody(potty.b2body);
+//        myLight.setActive(false);
         myLight2 = new PointLight(rayHandler, 200, Color.TEAL, 16.f, 0, 0);
         myLight2.setSoftnessLength(3);
         myLight2.attachToBody(guy.b2body);
@@ -194,13 +195,15 @@ public class PlayScreen extends HeroScreen {
             pottyRenderer.render(batch);
             playerRenderer.render(batch);
         }
-        b2dWorld.renderForeground(gameCam);
         pe.draw(batch);
         batch.end();
 
+        batch.begin();
+        b2dWorld.renderForeground(gameCam);
         rayHandler.render();
+        batch.end();
 
-//        b2dWorld.renderDebug(gameCam);
+        b2dWorld.renderDebug(gameCam);
 
         hud.render(dt);
     }

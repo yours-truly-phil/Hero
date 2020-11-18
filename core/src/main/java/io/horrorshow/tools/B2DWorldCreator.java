@@ -65,7 +65,6 @@ public class B2DWorldCreator {
 
     private void addStaticWallsToWorld(TiledMap map, World world) {
         BodyDef bdef = new BodyDef();
-//        PolygonShape shape = new PolygonShape();
         FixtureDef fdef = new FixtureDef();
 
         for (MapObject object : map.getLayers().get(LAYER_STATIC_COLLISION).getObjects()) {
