@@ -68,7 +68,6 @@ public class PlayScreen extends HeroScreen {
         gameCam = new OrthographicCamera();
         gamePort = new FitViewport(V_WIDTH / PPM, V_HEIGHT / PPM, gameCam);
 
-//        b2dWorld = new B2DWorld("opengameart/zelda-like/level.tmx");
         b2dWorld = new B2DWorld("maps/level1.tmx");
 
         gameCam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);

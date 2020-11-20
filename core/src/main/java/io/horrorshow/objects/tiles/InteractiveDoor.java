@@ -13,11 +13,11 @@ import text.formic.Stringf;
 import static io.horrorshow.Hero.DOOR_BIT;
 import static io.horrorshow.Hero.PPM;
 
-public class NewDoor extends InteractiveTileObject {
+public class InteractiveDoor extends InteractiveTileObject {
 
     private Rectangle boundsCells;
 
-    public NewDoor(World world, TiledMap map, RectangleMapObject object) {
+    public InteractiveDoor(World world, TiledMap map, RectangleMapObject object) {
         super(world, map, object);
         fixture.setUserData(this);
         setCategoryFilter(DOOR_BIT);

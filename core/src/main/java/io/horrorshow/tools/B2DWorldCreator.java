@@ -11,7 +11,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
-import io.horrorshow.objects.tiles.NewDoor;
+import io.horrorshow.objects.tiles.InteractiveDoor;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,7 +30,15 @@ public class B2DWorldCreator {
     public World createWorld(TiledMap map, Vector2 gravity) {
         World world = new World(gravity, true);
 
-        Map<String, NewDoor> doorMap = new HashMap<>();
+        createDoors(map, world);
+
+        addStaticWallsToWorld(map, world);
+
+        return world;
+    }
+
+    private void createDoors(TiledMap map, World world) {
+        Map<String, InteractiveDoor> doorMap = new HashMap<>();
         Array.ArrayIterator<RectangleMapObject> interactIter = new Array.ArrayIterator<>(
                 map.getLayers().get("interact").getObjects().getByType(RectangleMapObject.class));
         while (interactIter.hasNext()) {
@@ -38,7 +46,7 @@ public class B2DWorldCreator {
             var props = rectMapObj.getProperties();
             if (props.containsKey("name")) {
                 var name = props.get("name", String.class);
-                var door = new NewDoor(world, map, rectMapObj);
+                var door = new InteractiveDoor(world, map, rectMapObj);
                 doorMap.put(name, door);
             }
         }
@@ -52,15 +60,6 @@ public class B2DWorldCreator {
                 doorMap.get(name).setBoundsCells(rectMapObj.getRectangle());
             }
         }
-
-        addStaticWallsToWorld(map, world);
-//
-//        Array.ArrayIterator<RectangleMapObject> doorIter = new Array.ArrayIterator<>(
-//                map.getLayers().get("door").getObjects().getByType(RectangleMapObject.class));
-//        while (doorIter.hasNext()) {
-//            new Door(world, map, doorIter.next());
-//        }
-        return world;
     }
 
     private void addStaticWallsToWorld(TiledMap map, World world) {
