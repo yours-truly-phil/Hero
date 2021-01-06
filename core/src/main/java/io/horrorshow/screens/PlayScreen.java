@@ -160,13 +160,13 @@ public class PlayScreen extends HeroScreen {
     }
 
     private void handleInput(float dt) {
-        if (Gdx.input.isKeyPressed(Input.Keys.PLUS)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.NUMPAD_ADD)) {
             gameCam.zoom -= dt;
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.MINUS)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.NUMPAD_SUBTRACT)) {
             gameCam.zoom += dt;
         }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.MINUS)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_SUBTRACT)) {
             listener.remove();
             liftListener.remove();
         }
